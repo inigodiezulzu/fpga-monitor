@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="adc_manager_tb_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="adc_manager_tb" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="10361666666fs"></ZoomStartTime>
+      <ZoomEndTime time="15981666667fs"></ZoomEndTime>
+      <Cursor1Time time="15045000000fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="302"></NameColumnWidth>
+      <ValueColumnWidth column_width="66"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="37" />
+   <wvobject type="logic" fp_name="/adc_manager_tb/clk_tb">
+      <obj_property name="ElementShortName">clk_tb</obj_property>
+      <obj_property name="ObjectShortName">clk_tb</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/adc_manager_tb/rst_n_tb">
+      <obj_property name="ElementShortName">rst_n_tb</obj_property>
+      <obj_property name="ObjectShortName">rst_n_tb</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/adc_manager_tb/config_vref_tb">
+      <obj_property name="ElementShortName">config_vref_tb[1:0]</obj_property>
+      <obj_property name="ObjectShortName">config_vref_tb[1:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/adc_manager_tb/en_tb">
+      <obj_property name="ElementShortName">en_tb</obj_property>
+      <obj_property name="ObjectShortName">en_tb</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/adc_manager_tb/UUT/clr">
+      <obj_property name="ElementShortName">clr</obj_property>
+      <obj_property name="ObjectShortName">clr</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/adc_manager_tb/ready_tb">
+      <obj_property name="ElementShortName">ready_tb</obj_property>
+      <obj_property name="ObjectShortName">ready_tb</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/adc_manager_tb/recv_data_tb">
+      <obj_property name="ElementShortName">recv_data_tb[15:0]</obj_property>
+      <obj_property name="ObjectShortName">recv_data_tb[15:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/adc_manager_tb/SPI_CS_n_tb">
+      <obj_property name="ElementShortName">SPI_CS_n_tb</obj_property>
+      <obj_property name="ObjectShortName">SPI_CS_n_tb</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/adc_manager_tb/SPI_SCLK_tb">
+      <obj_property name="ElementShortName">SPI_SCLK_tb</obj_property>
+      <obj_property name="ObjectShortName">SPI_SCLK_tb</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/adc_manager_tb/SPI_MISO_tb">
+      <obj_property name="ElementShortName">SPI_MISO_tb</obj_property>
+      <obj_property name="ObjectShortName">SPI_MISO_tb</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/adc_manager_tb/SPI_MOSI_tb">
+      <obj_property name="ElementShortName">SPI_MOSI_tb</obj_property>
+      <obj_property name="ObjectShortName">SPI_MOSI_tb</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/adc_manager_tb/UUT/spi_state">
+      <obj_property name="ElementShortName">spi_state</obj_property>
+      <obj_property name="ObjectShortName">spi_state</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/adc_manager_tb/UUT/generate_dual_adc_fsm/spi_state_reg">
+      <obj_property name="ElementShortName">spi_state_reg</obj_property>
+      <obj_property name="ObjectShortName">spi_state_reg</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/adc_manager_tb/UUT/generate_dual_adc_fsm/spi_idle_re">
+      <obj_property name="ElementShortName">spi_idle_re</obj_property>
+      <obj_property name="ObjectShortName">spi_idle_re</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/adc_manager_tb/UUT/state">
+      <obj_property name="ElementShortName">state</obj_property>
+      <obj_property name="ObjectShortName">state</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/adc_manager_tb/UUT/configuration_step">
+      <obj_property name="ElementShortName">configuration_step</obj_property>
+      <obj_property name="ObjectShortName">configuration_step</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/adc_manager_tb/UUT/spi_enable">
+      <obj_property name="ElementShortName">spi_enable</obj_property>
+      <obj_property name="ObjectShortName">spi_enable</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/adc_manager_tb/UUT/spi_ready">
+      <obj_property name="ElementShortName">spi_ready</obj_property>
+      <obj_property name="ObjectShortName">spi_ready</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/adc_manager_tb/UUT/spi_send_data">
+      <obj_property name="ElementShortName">spi_send_data[15:0]</obj_property>
+      <obj_property name="ObjectShortName">spi_send_data[15:0]</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/adc_manager_tb/UUT/cooldown_cnt">
+      <obj_property name="ElementShortName">cooldown_cnt</obj_property>
+      <obj_property name="ObjectShortName">cooldown_cnt</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/adc_manager_tb/UUT/cooled">
+      <obj_property name="ElementShortName">cooled</obj_property>
+      <obj_property name="ObjectShortName">cooled</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/adc_manager_tb/UUT/internal_enable">
+      <obj_property name="ElementShortName">internal_enable</obj_property>
+      <obj_property name="ObjectShortName">internal_enable</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/adc_manager_tb/UUT/COOLDOWN_CNT_MAX">
+      <obj_property name="ElementShortName">COOLDOWN_CNT_MAX</obj_property>
+      <obj_property name="ObjectShortName">COOLDOWN_CNT_MAX</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/adc_manager_tb/UUT/spi_controller/cnt">
+      <obj_property name="ElementShortName">cnt</obj_property>
+      <obj_property name="ObjectShortName">cnt</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/adc_manager_tb/UUT/spi_controller/read_enable">
+      <obj_property name="ElementShortName">read_enable</obj_property>
+      <obj_property name="ObjectShortName">read_enable</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/adc_manager_tb/UUT/spi_controller/write_enable">
+      <obj_property name="ElementShortName">write_enable</obj_property>
+      <obj_property name="ObjectShortName">write_enable</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/adc_manager_tb/UUT/spi_controller/sclk_aux">
+      <obj_property name="ElementShortName">sclk_aux</obj_property>
+      <obj_property name="ObjectShortName">sclk_aux</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/adc_manager_tb/UUT/spi_controller/write_index">
+      <obj_property name="ElementShortName">write_index</obj_property>
+      <obj_property name="ObjectShortName">write_index</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/adc_manager_tb/UUT/spi_controller/read_index">
+      <obj_property name="ElementShortName">read_index</obj_property>
+      <obj_property name="ObjectShortName">read_index</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/adc_manager_tb/UUT/spi_controller/state">
+      <obj_property name="ElementShortName">state</obj_property>
+      <obj_property name="ObjectShortName">state</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/adc_manager_tb/UUT/spi_controller/miso_shift_reg">
+      <obj_property name="ElementShortName">miso_shift_reg[1:0]</obj_property>
+      <obj_property name="ObjectShortName">miso_shift_reg[1:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/adc_manager_tb/UUT/spi_controller/miso_s">
+      <obj_property name="ElementShortName">miso_s</obj_property>
+      <obj_property name="ObjectShortName">miso_s</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/adc_manager_tb/UUT/spi_controller/read_enable_shift_reg">
+      <obj_property name="ElementShortName">read_enable_shift_reg[2:0]</obj_property>
+      <obj_property name="ObjectShortName">read_enable_shift_reg[2:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/adc_manager_tb/UUT/spi_controller/read_enable_delayed">
+      <obj_property name="ElementShortName">read_enable_delayed</obj_property>
+      <obj_property name="ObjectShortName">read_enable_delayed</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/adc_manager_tb/UUT/spi_controller/sclk_s">
+      <obj_property name="ElementShortName">sclk_s</obj_property>
+      <obj_property name="ObjectShortName">sclk_s</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/adc_manager_tb/UUT/spi_controller/mosi_s">
+      <obj_property name="ElementShortName">mosi_s</obj_property>
+      <obj_property name="ObjectShortName">mosi_s</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/adc_manager_tb/UUT/spi_controller/cs_n_s">
+      <obj_property name="ElementShortName">cs_n_s</obj_property>
+      <obj_property name="ObjectShortName">cs_n_s</obj_property>
+   </wvobject>
+</wave_config>

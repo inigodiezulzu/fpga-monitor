@@ -1,0 +1,34 @@
+/dts-v1/;
+/plugin/;
+
+/ {
+    fragment@0 {
+        target = <&amba_pl>;
+        __overlay__ {
+            monitor_0: monitor@fpga {
+                compatible = "cei.upm,monitor-1.00.a";
+                reg = <0x7ab00000 0x10000 0x20000000 0x10000 0x20010000 0x10000>;
+                reg-names = "ctrl", "power", "traces";
+                dmas = <&dmaPL 0>;
+                dma-names = "pl-dma";
+            };
+            dmaPL: dma@7ab10000 {
+                #dma-cells = <1>;
+                clock-names = "m_axi_aclk", "s_axi_lite_aclk";
+                clocks = <&clkc 15>, <&clkc 15>;
+                compatible = "xlnx,axi-cdma-4.1", "xlnx,axi-cdma-1.00.a";
+                interrupt-names = "cdma_introut";
+                interrupt-parent = <&intc>;
+                interrupts = <0 30 4>;
+                reg = <0x7ab10000 0x10000>;
+                xlnx,addrwidth = <0x20>;
+                dma-channel@7ab10000 {
+                    compatible = "xlnx,axi-cdma-channel";
+                    interrupts = <0 30 4>;
+                    xlnx,datawidth = <0x40>;
+                    xlnx,max-burst-len = <0x100>;
+                };
+            };
+        };
+    };
+};

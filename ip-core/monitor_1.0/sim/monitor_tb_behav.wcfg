@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="monitor_tb_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="monitor_tb" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="0fs"></ZoomStartTime>
+      <ZoomEndTime time="94600000001fs"></ZoomEndTime>
+      <Cursor1Time time="0fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="327"></NameColumnWidth>
+      <ValueColumnWidth column_width="219"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="61" />
+   <wvobject type="logic" fp_name="/monitor_tb/clk_tb">
+      <obj_property name="ElementShortName">clk_tb</obj_property>
+      <obj_property name="ObjectShortName">clk_tb</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/monitor_tb/rst_n_tb">
+      <obj_property name="ElementShortName">rst_n_tb</obj_property>
+      <obj_property name="ObjectShortName">rst_n_tb</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/monitor_tb/user_config_vref_tb">
+      <obj_property name="ElementShortName">user_config_vref_tb[1:0]</obj_property>
+      <obj_property name="ObjectShortName">user_config_vref_tb[1:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/monitor_tb/UUT/user_config_vref_reg">
+      <obj_property name="ElementShortName">user_config_vref_reg[1:0]</obj_property>
+      <obj_property name="ObjectShortName">user_config_vref_reg[1:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/monitor_tb/start_tb">
+      <obj_property name="ElementShortName">start_tb</obj_property>
+      <obj_property name="ObjectShortName">start_tb</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/monitor_tb/stop_tb">
+      <obj_property name="ElementShortName">stop_tb</obj_property>
+      <obj_property name="ObjectShortName">stop_tb</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/monitor_tb/probes_tb">
+      <obj_property name="ElementShortName">probes_tb[6:0]</obj_property>
+      <obj_property name="ObjectShortName">probes_tb[6:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/monitor_tb/UUT/probes_delayed">
+      <obj_property name="ElementShortName">probes_delayed[6:0]</obj_property>
+      <obj_property name="ObjectShortName">probes_delayed[6:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/monitor_tb/probes_mask_tb">
+      <obj_property name="ElementShortName">probes_mask_tb[1:0]</obj_property>
+      <obj_property name="ObjectShortName">probes_mask_tb[1:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/monitor_tb/axi_sniffer_en_tb">
+      <obj_property name="ElementShortName">axi_sniffer_en_tb</obj_property>
+      <obj_property name="ObjectShortName">axi_sniffer_en_tb</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/monitor_tb/axi_sniffer_mask_tb">
+      <obj_property name="ElementShortName">axi_sniffer_mask_tb[4:0]</obj_property>
+      <obj_property name="ObjectShortName">axi_sniffer_mask_tb[4:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/monitor_tb/busy_tb">
+      <obj_property name="ElementShortName">busy_tb</obj_property>
+      <obj_property name="ObjectShortName">busy_tb</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/monitor_tb/done_tb">
+      <obj_property name="ElementShortName">done_tb</obj_property>
+      <obj_property name="ObjectShortName">done_tb</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/monitor_tb/count_tb">
+      <obj_property name="ElementShortName">count_tb[31:0]</obj_property>
+      <obj_property name="ObjectShortName">count_tb[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/monitor_tb/SPI_CS_n_tb">
+      <obj_property name="ElementShortName">SPI_CS_n_tb</obj_property>
+      <obj_property name="ObjectShortName">SPI_CS_n_tb</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/monitor_tb/SPI_SCLK_tb">
+      <obj_property name="ElementShortName">SPI_SCLK_tb</obj_property>
+      <obj_property name="ObjectShortName">SPI_SCLK_tb</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/monitor_tb/SPI_MISO_tb">
+      <obj_property name="ElementShortName">SPI_MISO_tb</obj_property>
+      <obj_property name="ObjectShortName">SPI_MISO_tb</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/monitor_tb/SPI_MOSI_tb">
+      <obj_property name="ElementShortName">SPI_MOSI_tb</obj_property>
+      <obj_property name="ObjectShortName">SPI_MOSI_tb</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/monitor_tb/UUT/state">
+      <obj_property name="ElementShortName">state</obj_property>
+      <obj_property name="ObjectShortName">state</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/monitor_tb/UUT/capture_step">
+      <obj_property name="ElementShortName">capture_step</obj_property>
+      <obj_property name="ObjectShortName">capture_step</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/monitor_tb/UUT/clear_step">
+      <obj_property name="ElementShortName">clear_step</obj_property>
+      <obj_property name="ObjectShortName">clear_step</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/monitor_tb/UUT/clear">
+      <obj_property name="ElementShortName">clear</obj_property>
+      <obj_property name="ObjectShortName">clear</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/monitor_tb/UUT/trigger_enable">
+      <obj_property name="ElementShortName">trigger_enable</obj_property>
+      <obj_property name="ObjectShortName">trigger_enable</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/monitor_tb/UUT/ptm_trigger">
+      <obj_property name="ElementShortName">ptm_trigger</obj_property>
+      <obj_property name="ObjectShortName">ptm_trigger</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/monitor_tb/UUT/atm_trigger">
+      <obj_property name="ElementShortName">atm_trigger</obj_property>
+      <obj_property name="ObjectShortName">atm_trigger</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/monitor_tb/UUT/internal_start">
+      <obj_property name="ElementShortName">internal_start</obj_property>
+      <obj_property name="ObjectShortName">internal_start</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/monitor_tb/UUT/traces_enable">
+      <obj_property name="ElementShortName">traces_enable</obj_property>
+      <obj_property name="ObjectShortName">traces_enable</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/monitor_tb/UUT/event_detected">
+      <obj_property name="ElementShortName">event_detected</obj_property>
+      <obj_property name="ObjectShortName">event_detected</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/monitor_tb/UUT/acd_enable">
+      <obj_property name="ElementShortName">acd_enable</obj_property>
+      <obj_property name="ObjectShortName">acd_enable</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/monitor_tb/UUT/adc_ready">
+      <obj_property name="ElementShortName">adc_ready</obj_property>
+      <obj_property name="ObjectShortName">adc_ready</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/monitor_tb/UUT/events_detector/edges_aux">
+      <obj_property name="ElementShortName">edges_aux[6:0]</obj_property>
+      <obj_property name="ObjectShortName">edges_aux[6:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/monitor_tb/UUT/edges">
+      <obj_property name="ElementShortName">edges[6:0]</obj_property>
+      <obj_property name="ObjectShortName">edges[6:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/monitor_tb/UUT/power_data">
+      <obj_property name="ElementShortName">power_data[15:0]</obj_property>
+      <obj_property name="ObjectShortName">power_data[15:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/monitor_tb/UUT/counter_count">
+      <obj_property name="ElementShortName">counter_count[31:0]</obj_property>
+      <obj_property name="ObjectShortName">counter_count[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/monitor_tb/UUT/power_bram_addr">
+      <obj_property name="ElementShortName">power_bram_addr[6:0]</obj_property>
+      <obj_property name="ObjectShortName">power_bram_addr[6:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/monitor_tb/UUT/power_bram_we">
+      <obj_property name="ElementShortName">power_bram_we</obj_property>
+      <obj_property name="ObjectShortName">power_bram_we</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/monitor_tb/UUT/power_bram_we_fix">
+      <obj_property name="ElementShortName">power_bram_we_fix</obj_property>
+      <obj_property name="ObjectShortName">power_bram_we_fix</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/monitor_tb/UUT/power_bram_full">
+      <obj_property name="ElementShortName">power_bram_full</obj_property>
+      <obj_property name="ObjectShortName">power_bram_full</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/monitor_tb/UUT/traces_bram_addr">
+      <obj_property name="ElementShortName">traces_bram_addr[31:0]</obj_property>
+      <obj_property name="ObjectShortName">traces_bram_addr[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/monitor_tb/UUT/traces_bram_we">
+      <obj_property name="ElementShortName">traces_bram_we</obj_property>
+      <obj_property name="ObjectShortName">traces_bram_we</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/monitor_tb/UUT/traces_bram_full">
+      <obj_property name="ElementShortName">traces_bram_full</obj_property>
+      <obj_property name="ObjectShortName">traces_bram_full</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/monitor_tb/power_bram_utilization_tb">
+      <obj_property name="ElementShortName">power_bram_utilization_tb[6:0]</obj_property>
+      <obj_property name="ObjectShortName">power_bram_utilization_tb[6:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/monitor_tb/traces_bram_utilization_tb">
+      <obj_property name="ElementShortName">traces_bram_utilization_tb[31:0]</obj_property>
+      <obj_property name="ObjectShortName">traces_bram_utilization_tb[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/monitor_tb/UUT/probes_bram_data">
+      <obj_property name="ElementShortName">probes_bram_data[6:0]</obj_property>
+      <obj_property name="ObjectShortName">probes_bram_data[6:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/monitor_tb/UUT/power_bram_read_en">
+      <obj_property name="ElementShortName">power_bram_read_en</obj_property>
+      <obj_property name="ObjectShortName">power_bram_read_en</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/monitor_tb/UUT/traces_bram_read_en">
+      <obj_property name="ElementShortName">traces_bram_read_en</obj_property>
+      <obj_property name="ObjectShortName">traces_bram_read_en</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/monitor_tb/UUT/power_bram/en_a">
+      <obj_property name="ElementShortName">en_a</obj_property>
+      <obj_property name="ObjectShortName">en_a</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/monitor_tb/UUT/power_bram/we_a">
+      <obj_property name="ElementShortName">we_a</obj_property>
+      <obj_property name="ObjectShortName">we_a</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/monitor_tb/UUT/power_bram/addr_a">
+      <obj_property name="ElementShortName">addr_a[6:0]</obj_property>
+      <obj_property name="ObjectShortName">addr_a[6:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/monitor_tb/UUT/power_bram/din_a">
+      <obj_property name="ElementShortName">din_a[15:0]</obj_property>
+      <obj_property name="ObjectShortName">din_a[15:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/monitor_tb/UUT/timestamps_bram/en_a">
+      <obj_property name="ElementShortName">en_a</obj_property>
+      <obj_property name="ObjectShortName">en_a</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/monitor_tb/UUT/timestamps_bram/we_a">
+      <obj_property name="ElementShortName">we_a</obj_property>
+      <obj_property name="ObjectShortName">we_a</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/monitor_tb/UUT/timestamps_bram/addr_a">
+      <obj_property name="ElementShortName">addr_a[31:0]</obj_property>
+      <obj_property name="ObjectShortName">addr_a[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/monitor_tb/UUT/timestamps_bram/din_a">
+      <obj_property name="ElementShortName">din_a[31:0]</obj_property>
+      <obj_property name="ObjectShortName">din_a[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/monitor_tb/UUT/probes_bram/en_a">
+      <obj_property name="ElementShortName">en_a</obj_property>
+      <obj_property name="ObjectShortName">en_a</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/monitor_tb/UUT/probes_bram/we_a">
+      <obj_property name="ElementShortName">we_a</obj_property>
+      <obj_property name="ObjectShortName">we_a</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/monitor_tb/UUT/probes_bram/addr_a">
+      <obj_property name="ElementShortName">addr_a[31:0]</obj_property>
+      <obj_property name="ObjectShortName">addr_a[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/monitor_tb/UUT/probes_bram/din_a">
+      <obj_property name="ElementShortName">din_a[6:0]</obj_property>
+      <obj_property name="ObjectShortName">din_a[6:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/monitor_tb/UUT/power_errors_count">
+      <obj_property name="ElementShortName">power_errors_count[6:0]</obj_property>
+      <obj_property name="ObjectShortName">power_errors_count[6:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/monitor_tb/UUT/POWER_MEASUREMENT_FAILURE">
+      <obj_property name="ElementShortName">POWER_MEASUREMENT_FAILURE[6:0]</obj_property>
+      <obj_property name="ObjectShortName">POWER_MEASUREMENT_FAILURE[6:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/monitor_tb/UUT/power_error_s">
+      <obj_property name="ElementShortName">power_error_s</obj_property>
+      <obj_property name="ObjectShortName">power_error_s</obj_property>
+   </wvobject>
+</wave_config>
