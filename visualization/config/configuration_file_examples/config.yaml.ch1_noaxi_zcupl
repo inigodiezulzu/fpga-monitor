@@ -2,13 +2,14 @@ TOOL:
   FILTERING:
   # Parameters related with the power consupmtion filtering
   # REQUIRED
-    ENABLED: False # True or False
-    ORDER: 16      # Integer
-    FS: 1000000    # Integer (Hz)
-    CUTOFF: 100000 # Integer (Hz)
+    ENABLED: True     # True or False
+    ORDER: 5          # Integer
+    FS: 500000        # Integer (Hz)
+    CUTOFF: 25000     # Integer (Hz)
   OPTIONAL_PARAMETERS:
   # Optional parameters
   # Would be requested by the tool if empty
+    DUAL_MONITOR_ENABLED: False   # True, False or empty
     AXI_BUS_ENABLED: False        # True, False or empty
     SAMPLING_FREQUENCY_MHZ: 100   # Integer or empty (in MHz)
     NUMBER_SIGNALS : 8            # Integer or empty
