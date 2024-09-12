@@ -1,0 +1,1 @@
+../../../../../../ip-core/monitor_1.0/src/axi_trigger_module.vhd

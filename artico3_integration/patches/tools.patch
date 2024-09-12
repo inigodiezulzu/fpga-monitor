@@ -1,0 +1,134 @@
+diff -ruN tools_original/_pypack/artico3/scripts/os/gen_driver.py tools_monitor/_pypack/artico3/scripts/os/gen_driver.py
+--- tools_original/_pypack/artico3/scripts/os/gen_driver.py	2024-09-12 16:02:31.918619000 +0200
++++ tools_monitor/_pypack/artico3/scripts/os/gen_driver.py	2024-09-11 12:32:06.905890000 +0200
+@@ -50,21 +50,25 @@
+         log.error("Linux kernel source path must be specified")
+         return
+     outdir = outdir if outdir is not None else prj.basedir + ".os"
+-    shutil2.mkdir(outdir)
+-    outdir = outdir + "/driver"
++    shutil2.makedirs(outdir + "/driver")
++    outdir1 = outdir + "/driver/artico3"
++    outdir2 = outdir + "/driver/monitor"
+ 
+     log.info("Generate Linux driver in project directory '" + prj.dir + "'")
+ 
+     dictionary = {}
+ 
+-    log.info("Exporting Linux driver...")
+-    prj.apply_template("artico3_driver_linux", dictionary, outdir, link)
++    log.info("Exporting Linux drivers...")
++    prj.apply_template("artico3_driver_linux", dictionary, outdir1, link)
++    prj.apply_template("artico3_monitor_driver_linux", dictionary, outdir2, link)
+ 
+-    log.info("Building Linux driver...")
++    log.info("Building Linux drivers...")
+ 
+     if cross == "":
+         if "xczu" in prj.impl.part:
+-            cc = "/opt/Xilinx/SDK/{0}/gnu/aarch64/lin/aarch64-linux/bin/aarch64-linux-gnu-".format(prj.impl.xil[1])
++           cc = "/opt/Xilinx/SDK/{0}/gnu/aarch64/lin/aarch64-linux/bin/aarch64-linux-gnu-".format(prj.impl.xil[1])
++            #cc = "/opt/Xilinx/Vitis/2020.2/gnu/aarch64/lin/aarch64-linux/bin/aarch64-linux-gnu-"
++            #cc = "/media/juan/HDD/tools/Vitis/2021.2/gnu/aarch64/lin/aarch64-linux/bin/aarch64-linux-gnu-"
+         else:
+             #~ cc = "/opt/Xilinx/SDK/{0}/gnu/arm/lin/bin/arm-xilinx-linux-gnueabi-".format(prj.impl.xil[1])
+             cc = "/opt/Xilinx/SDK/{0}/gnu/aarch32/lin/gcc-arm-linux-gnueabi/bin/arm-linux-gnueabihf-".format(prj.impl.xil[1])
+@@ -76,8 +80,15 @@
+     else:
+         arch = "arm"
+ 
+-    shutil2.chdir(outdir)
++    shutil2.chdir(outdir1)
++    subprocess.run("""
++        bash -c "export CROSS_COMPILE={0} &&
++        export ARCH={1} &&
++        export KDIR={2} &&
++        make"
++        """.format(cc, arch, kdir), shell=True, check=True)
+ 
++    shutil2.chdir(outdir2)
+     subprocess.run("""
+         bash -c "export CROSS_COMPILE={0} &&
+         export ARCH={1} &&
+diff -ruN tools_original/_pypack/artico3/scripts/os/gen_overlay.py tools_monitor/_pypack/artico3/scripts/os/gen_overlay.py
+--- tools_original/_pypack/artico3/scripts/os/gen_overlay.py	2024-09-12 16:02:31.918619000 +0200
++++ tools_monitor/_pypack/artico3/scripts/os/gen_overlay.py	2024-09-11 12:32:23.897838000 +0200
+@@ -49,23 +49,32 @@
+         log.error("Device Tree Compiler must be specified")
+         return
+     outdir = outdir if outdir is not None else prj.basedir + ".os"
+-    shutil2.mkdir(outdir)
+-    outdir = outdir + "/overlay"
++    shutil2.makedirs(outdir + "/overlay")
++    outdir1 = outdir + "/overlay/artico3"
++    outdir2 = outdir + "/overlay/monitor"
+ 
+     log.info("Generate device tree overlay in project directory '" + prj.dir + "'")
+ 
+     dictionary = {}
+     dictionary["DEVICE"] = "zynqmp" if "xczu" in prj.impl.part else "zynq"
+ 
+-    log.info("Exporting device tree overlay...")
+-    prj.apply_template("artico3_devicetree_overlay", dictionary, outdir, link)
++    log.info("Exporting device tree overlays...")
++    prj.apply_template("artico3_devicetree_overlay", dictionary, outdir1, link)
++    prj.apply_template("artico3_monitor_devicetree_overlay", dictionary, outdir2, link)
+ 
+-    log.info("Building device tree overlay...")
+-    shutil2.chdir(outdir)
++    log.info("Building device tree overlays...")
++
++    shutil2.chdir(outdir1)
+     subprocess.run("""
+         bash -c "{0}/dtc -I dts -O dtb -@ -o artico3.dtbo artico3.dts"
+         bash -c "{0}/dtc -I dts -O dts -@ -o artico3.dtso artico3.dts"
+         """.format(dtcdir), shell=True, check=True)
+ 
++    shutil2.chdir(outdir2)
++    subprocess.run("""
++        bash -c "{0}/dtc -I dts -O dtb -@ -o monitor.dtbo monitor.dts"
++        bash -c "{0}/dtc -I dts -O dts -@ -o monitor.dtso monitor.dts"
++        """.format(dtcdir), shell=True, check=True)
++
+     print()
+     shutil2.chdir(prj.dir)
+diff -ruN tools_original/_pypack/artico3/scripts/sw/export.py tools_monitor/_pypack/artico3/scripts/sw/export.py
+--- tools_original/_pypack/artico3/scripts/sw/export.py	2024-09-12 16:02:31.918619000 +0200
++++ tools_monitor/_pypack/artico3/scripts/sw/export.py	2024-09-11 12:32:47.625766000 +0200
+@@ -35,6 +35,7 @@
+         Exports the software project and generates all necessary files.
+         """)
+     parser.add_argument("-l", "--link", help="link sources instead of copying", default=False, action="store_true")
++    parser.add_argument("-m", "--monitor", help="enable power monitor library", default=False, action="store_true")
+     parser.add_argument("swdir", help="alternative export directory", nargs="?")
+     return parser
+ 
+@@ -60,12 +61,12 @@
+     dictionary["SOURCES"] = [srcs]
+ 
+     log.info("Generating export files ...")
+-    templ = "artico3_app_" + prj.impl.os
++    templ = "artico3_monitor_app_" + prj.impl.os if args.monitor else "artico3_app_" + prj.impl.os
+     prj.apply_template(templ, dictionary, swdir, link)
+ 
+     dictionary = {}
+     dictionary["REPO_REL"] = shutil2.relpath(prj.impl.repo, swdir)
+     dictionary["OBJS"] = [{"Source": shutil2.trimext(_) + ".o"}
+-                           for _ in shutil2.listfiles(swdir, True, "c[p]*$") if "artico3" not in _]
++                           for _ in shutil2.listfiles(swdir, True, "c[p]*$") if all(x not in _ for x in ["artico3","monitor"])]
+ 
+     template.preproc(shutil2.join(swdir, "Makefile"), dictionary, "overwrite", force=True)
+diff -ruN tools_original/_pypack/artico3/utils/shutil2.py tools_monitor/_pypack/artico3/utils/shutil2.py
+--- tools_original/_pypack/artico3/utils/shutil2.py	2024-09-12 16:02:31.918619000 +0200
++++ tools_monitor/_pypack/artico3/utils/shutil2.py	2024-09-06 16:35:56.512454000 +0200
+@@ -69,6 +69,10 @@
+     if not os.path.isdir(path):
+         os.mkdir(path)
+ 
++def makedirs(path):
++    if not os.path.isdir(path):
++        os.makedirs(path)
++
+ def listdirs(path, rec=False):
+     if rec:
+         return [_[0] for _ in os.walk(path)]

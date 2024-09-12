@@ -1,0 +1,1 @@
+../../../../../../ip-core/monitor_1.0/hdl/monitor_traces_data.vhd
