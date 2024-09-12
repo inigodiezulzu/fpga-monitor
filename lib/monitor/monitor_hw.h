@@ -16,12 +16,12 @@ extern uint32_t *monitor_hw;
 
 #if ZYNQMP
 // Zynq-7000 devices
-#define PUM_POWER_ADDR  (0xb0100000)
-#define PUM_TRACES_ADDR (0xb0180000)
+#define MONITOR_POWER_ADDR  (0xb0100000)
+#define MONITOR_TRACES_ADDR (0xb0180000)
 #else
 // Zynq Ultrascale+ devices
-#define PUM_POWER_ADDR  (0x20000000)
-#define PUM_TRACES_ADDR (0x20040000)
+#define MONITOR_POWER_ADDR  (0x20000000)
+#define MONITOR_TRACES_ADDR (0x20040000)
 
 #endif
 
@@ -29,35 +29,35 @@ extern uint32_t *monitor_hw;
  * Monitor infrastructure register offsets (in 32-bit words)
  *
  */
-#define PUM_REG0    (0x00000000 >> 2)                     // REG 0
-#define PUM_REG1    (0x00000004 >> 2)                     // REG 1
-#define PUM_REG2    (0x00000008 >> 2)                     // REG 2
-#define PUM_REG3    (0x0000000c >> 2)                     // REG 3
+#define MONITOR_REG0    (0x00000000 >> 2)                     // REG 0
+#define MONITOR_REG1    (0x00000004 >> 2)                     // REG 1
+#define MONITOR_REG2    (0x00000008 >> 2)                     // REG 2
+#define MONITOR_REG3    (0x0000000c >> 2)                     // REG 3
 
 /*
  * Monitor infrastructure commands
  *
  */
-#define PUM_CONFIG_VREF             0x01    // In
-#define PUM_CONFIG_2VREF            0x02    // In
-#define PUM_START                   0x04    // In
-#define PUM_STOP                    0x08    // In
-#define PUM_AXI_SNIFFER_ENABLE_IN   0x20    // In
-#define PUM_BUSY                    0x01    // Out
-#define PUM_DONE                    0x02    // Out
-#define PUM_AXI_SNIFFER_ENABLE_OUT  0x04    // Out
-#define PUM_POWER_ERRORS_OFFSET     0x03    // Offset
+#define MONITOR_CONFIG_VREF             0x01    // In
+#define MONITOR_CONFIG_2VREF            0x02    // In
+#define MONITOR_START                   0x04    // In
+#define MONITOR_STOP                    0x08    // In
+#define MONITOR_AXI_SNIFFER_ENABLE_IN   0x20    // In
+#define MONITOR_BUSY                    0x01    // Out
+#define MONITOR_DONE                    0x02    // Out
+#define MONITOR_AXI_SNIFFER_ENABLE_OUT  0x04    // Out
+#define MONITOR_POWER_ERRORS_OFFSET     0x03    // Offset
 
 
-struct pumRegion_t {
+struct monitorRegion_t {
     char *name;
-    size_t size;  
+    size_t size;
     void *data;
 };
 
-struct pumData_t {
-    struct pumRegion_t *power;
-    struct pumRegion_t *traces;
+struct monitorData_t {
+    struct monitorRegion_t *power;
+    struct monitorRegion_t *traces;
 };
 
 /*
@@ -85,9 +85,17 @@ void monitor_hw_config_2vref();
 void monitor_hw_start();
 
 /*
- * Monitor stop function
+ * Monitor clean function
  *
  * This function cleans the monitor memory banks.
+ *
+ */
+void monitor_hw_clean();
+
+/*
+ * Monitor stop function
+ *
+ * This function stop the monitor acquisition. (only makes sense when power monitoring disabled)
  *
  */
 void monitor_hw_stop();

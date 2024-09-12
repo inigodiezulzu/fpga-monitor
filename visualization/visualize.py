@@ -26,13 +26,14 @@ def validate_yaml(file_path):
         config_parameters["freq_sys_mhz"]           = config_yaml['TOOL']['OPTIONAL_PARAMETERS']['SAMPLING_FREQUENCY_MHZ']
         config_parameters["number_signals"]         = config_yaml['TOOL']['OPTIONAL_PARAMETERS']['NUMBER_SIGNALS']
         config_parameters["number_axi_events"]      = config_yaml['TOOL']['OPTIONAL_PARAMETERS']['NUMBER_AXI_EVENTS']
+        config_parameters["adc_enabled"]            = config_yaml['MEASUREMENT_BOARD']['ADC_ENABLED']
         config_parameters["adc_reference_voltage"]  = config_yaml['MEASUREMENT_BOARD']['ADC_REFERENCE_VOLTAGE']
         config_parameters["adc_gain"]               = config_yaml['MEASUREMENT_BOARD']['ADC_GAIN']
         config_parameters["adc_resolution"]         = config_yaml['MEASUREMENT_BOARD']['ADC_RESOLUTION']
         config_parameters["shunt_resistor"]         = config_yaml['MEASUREMENT_BOARD']['SHUNT_RESISTOR']
         config_parameters["shunt_resistor_2"]       = config_yaml['MEASUREMENT_BOARD']['SHUNT_RESISTOR_2']
         config_parameters["vdd"]                    = config_yaml['MEASUREMENT_BOARD']['VDD']
-       
+
         if config_parameters["filter_enabled"] is None:
             print("Config file error: [TOOL > FILTERING > ENABLED]")
             exit(0)
@@ -48,23 +49,27 @@ def validate_yaml(file_path):
         if config_parameters["filter_cutoff"] is None:
             print("Config file error: [TOOL > FILTERING > CUTOFF]")
             exit(0)
-            
+
+        if config_parameters["adc_enabled"] is None:
+            print("Config file error: [MEASUREMENT_BOARD > ADC_ENABLED]")
+            exit(0)
+
         if config_parameters["adc_reference_voltage"] is None:
             print("Config file error: [MEASUREMENT_BOARD > ADC_REFERENCE_VOLTAGE]")
             exit(0)
-            
+
         if config_parameters["adc_gain"] is None:
             print("Config file error: [MEASUREMENT_BOARD > ADC_GAIN]")
             exit(0)
-            
+
         if config_parameters["adc_resolution"] is None:
             print("Config file error: [MEASUREMENT_BOARD > ADC_RESOLUTION]")
             exit(0)
-            
+
         if config_parameters["shunt_resistor"] is None:
             print("Config file error: [MEASUREMENT_BOARD > SHUNT_RESISTOR]")
             exit(0)
-            
+
         if config_parameters["vdd"] is None:
             print("Config file error: [MEASUREMENT_BOARD > VDD]")
             exit(0)
@@ -77,7 +82,7 @@ config_parameters = validate_yaml("config/config.yaml")
 print(config_parameters)
 
 
-# Remove old temporal directories if exist (due to a previous runtime exception) 
+# Remove old temporal directories if exist (due to a previous runtime exception)
 try:
     shutil.rmtree(os.getcwd() + '/tmp')
 except:
@@ -88,7 +93,8 @@ except:
     pass
 
 # Parse power consumption binary file
-power.parse_file()
+if config_parameters["adc_enabled"] in ['y','Y',True]:
+    power.parse_file()
 
 # User indicates if Bus Monitorization capabilities are enabled
 bus_monitoring_user_input = config_parameters["axi_bus_enabled"]

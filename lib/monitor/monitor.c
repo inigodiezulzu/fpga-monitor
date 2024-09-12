@@ -40,12 +40,12 @@
  * @monitor_hw : user-space map of Monitor hardware registers
  * @monitor_fd : /dev/monitor file descriptor (used to access kernels)
  *
- * @pumdata    : structure containing memory banks information
+ * @monitordata    : structure containing memory banks information
  *
  */
 static int monitor_fd;
 uint32_t *monitor_hw = NULL;
-static struct pumData_t *pumdata = NULL;
+static struct monitorData_t *monitordata = NULL;
 
 /*
  * Monitor init function
@@ -78,34 +78,34 @@ int monitor_init() {
     // Open Monitor device file
     monitor_fd = open(filename, O_RDWR);
     if (monitor_fd < 0) {
-        pum_print_error("[monitor-hw] open() %s failed\n", filename);
+        monitor_print_error("[monitor-hw] open() %s failed\n", filename);
         return -ENODEV;
     }
-    pum_print_debug("[monitor-hw] monitor_fd=%d | dev=%s\n", monitor_fd, filename);
+    monitor_print_debug("[monitor-hw] monitor_fd=%d | dev=%s\n", monitor_fd, filename);
 
     // Obtain access to physical memory map using mmap()
     monitor_hw = mmap(NULL, 0x10000, PROT_READ | PROT_WRITE, MAP_SHARED, monitor_fd, 0);
     if (monitor_hw == MAP_FAILED) {
-        pum_print_error("[monitor-hw] mmap() failed\n");
+        monitor_print_error("[monitor-hw] mmap() failed\n");
         ret = -ENOMEM;
         goto err_mmap;
     }
-    pum_print_debug("[monitor-hw] monitor_hw=%p\n", monitor_hw);
+    monitor_print_debug("[monitor-hw] monitor_hw=%p\n", monitor_hw);
 
     // Initialize regions structure
-    pumdata = malloc(sizeof *pumdata);
-    if (!pumdata) {
-        pum_print_error("[monitor-hw] malloc() failed\n");
+    monitordata = malloc(sizeof *monitordata);
+    if (!monitordata) {
+        monitor_print_error("[monitor-hw] malloc() failed\n");
         ret = -ENOMEM;
-        goto err_malloc_pumdata;
+        goto err_malloc_monitordata;
     }
-    pumdata->power = NULL;
-    pumdata->traces = NULL;
-    pum_print_debug("[monitor-hw] pumdata=%p\n", pumdata);
+    monitordata->power = NULL;
+    monitordata->traces = NULL;
+    monitor_print_debug("[monitor-hw] monitordata=%p\n", monitordata);
 
     return 0;
 
-err_malloc_pumdata:
+err_malloc_monitordata:
     munmap(monitor_hw, 0x10000);
 err_mmap:
     close(monitor_fd);
@@ -121,8 +121,8 @@ err_mmap:
  */
 void monitor_exit() {
 
-    // Release allocated memory for pumdata
-    free(pumdata);
+    // Release allocated memory for monitordata
+    free(monitordata);
 
     // Release memory obtained with mmap()
     munmap(monitor_hw, 0x10000);
@@ -168,9 +168,21 @@ void monitor_start(){
 }
 
 /*
- * Monitor stop function
+ * Monitor clean function
  *
  * This function cleans the monitor memory banks.
+ *
+ */
+void monitor_clean(){
+
+    monitor_hw_clean();
+
+}
+
+/*
+ * Monitor stop function
+ *
+ * This function stop the monitor acquisition. (only makes sense when power monitoring disabled)
  *
  */
 void monitor_stop(){
@@ -318,7 +330,7 @@ void monitor_wait(){
  */
 int monitor_read_power_consumption(unsigned int ndata) {
     struct dmaproxy_token token;
-    pumpdata_t *mem = NULL;
+    monitorpdata_t *mem = NULL;
 
     struct pollfd pfd;
     pfd.fd = monitor_fd;
@@ -327,14 +339,14 @@ int monitor_read_power_consumption(unsigned int ndata) {
     // Allocate DMA physical memory
     mem = mmap(NULL, ndata * sizeof *mem, PROT_READ | PROT_WRITE, MAP_SHARED, monitor_fd, sysconf(_SC_PAGESIZE));
     if (mem == MAP_FAILED) {
-        pum_print_error("[monitor-hw] mmap() failed\n");
+        monitor_print_error("[monitor-hw] mmap() failed\n");
         return -ENOMEM;
     }
 
     // Start DMA transfer
     token.memaddr = mem;
     token.memoff = 0x00000000;
-    token.hwaddr = (void *)PUM_POWER_ADDR;
+    token.hwaddr = (void *)MONITOR_POWER_ADDR;
     token.hwoff = 0x00000000;
     token.size = ndata * sizeof *mem;
     ioctl(monitor_fd, MONITOR_IOC_DMA_HW2MEM_POWER, &token);
@@ -343,13 +355,13 @@ int monitor_read_power_consumption(unsigned int ndata) {
     poll(&pfd, 1, -1);
 
 
-    if (!pumdata->power){
-        pum_print_error("[monitor-hw] no power region found (dma transfer)\n");
+    if (!monitordata->power){
+        monitor_print_error("[monitor-hw] no power region found (dma transfer)\n");
         return -1;
     }
     // Copy data from DMA-allocated memory buffer to userspace memory buffer
 
-    memcpy(pumdata->power->data, mem, ndata * sizeof *mem);
+    memcpy(monitordata->power->data, mem, ndata * sizeof *mem);
 
     // Release allocated DMA memory
     munmap(mem, ndata * sizeof *mem);
@@ -369,7 +381,7 @@ int monitor_read_power_consumption(unsigned int ndata) {
  */
 int monitor_read_traces(unsigned int ndata) {
     struct dmaproxy_token token;
-    pumtdata_t *mem = NULL;
+    monitortdata_t *mem = NULL;
 
     struct pollfd pfd;
     pfd.fd = monitor_fd;
@@ -378,14 +390,14 @@ int monitor_read_traces(unsigned int ndata) {
     // Allocate DMA physical memory
     mem = mmap(NULL, ndata * sizeof *mem, PROT_READ | PROT_WRITE, MAP_SHARED, monitor_fd, 2 * sysconf(_SC_PAGESIZE));
     if (mem == MAP_FAILED) {
-        pum_print_error("[monitor-hw] mmap() failed\n");
+        monitor_print_error("[monitor-hw] mmap() failed\n");
         return -ENOMEM;
     }
 
     // Start DMA transfer
     token.memaddr = mem;
     token.memoff = 0x00000000;
-    token.hwaddr = (void *)PUM_TRACES_ADDR;
+    token.hwaddr = (void *)MONITOR_TRACES_ADDR;
     token.hwoff = 0x00000000;
     token.size = ndata * sizeof *mem;
     ioctl(monitor_fd, MONITOR_IOC_DMA_HW2MEM_TRACES, &token);
@@ -393,13 +405,13 @@ int monitor_read_traces(unsigned int ndata) {
     // Wait for DMA transfer to finish
     poll(&pfd, 1, -1);
 
-    if (!pumdata->traces){
-        pum_print_error("[monitor-hw] no traces region found (dma transfer)\n");
+    if (!monitordata->traces){
+        monitor_print_error("[monitor-hw] no traces region found (dma transfer)\n");
         return -1;
     }
 
     // Copy data from DMA-allocated memory buffer to userspace memory buffer
-    memcpy(pumdata->traces->data, mem, ndata * sizeof *mem);
+    memcpy(monitordata->traces->data, mem, ndata * sizeof *mem);
 
     // Release allocated DMA memory
     munmap(mem, ndata * sizeof *mem);
@@ -420,27 +432,27 @@ int monitor_read_traces(unsigned int ndata) {
  * Return : pointer to allocated memory on success, NULL otherwise
  *
  */
-void *monitor_alloc(int ndata, const char *regname, enum pumregtype_t regtype) {
-    struct pumRegion_t *region = NULL;
+void *monitor_alloc(int ndata, const char *regname, enum monitorregtype_t regtype) {
+    struct monitorRegion_t *region = NULL;
 
     // Search for port in port lists
-    if (pumdata->power){
-        if (regtype == PUM_REG_POWER){
-            pum_print_error("[monitor-hw] power region already exist\n");
+    if (monitordata->power){
+        if (regtype == MONITOR_REG_POWER){
+            monitor_print_error("[monitor-hw] power region already exist\n");
             return NULL;
         }
-        if (strcmp(pumdata->power->name, regname) == 0){
-            pum_print_error("[monitor-hw] a region has been found with name %s\n", regname);
+        if (strcmp(monitordata->power->name, regname) == 0){
+            monitor_print_error("[monitor-hw] a region has been found with name %s\n", regname);
             return NULL;
         }
     }
-    if (pumdata->traces){
-        if (regtype == PUM_REG_TRACES){
-            pum_print_error("[monitor-hw] traces region already exist\n");
+    if (monitordata->traces){
+        if (regtype == MONITOR_REG_TRACES){
+            monitor_print_error("[monitor-hw] traces region already exist\n");
             return NULL;
         }
-        if (strcmp(pumdata->traces->name, regname) == 0){
-            pum_print_error("[monitor-hw] a region has been found with name %s\n", regname);
+        if (strcmp(monitordata->traces->name, regname) == 0){
+            monitor_print_error("[monitor-hw] a region has been found with name %s\n", regname);
             return NULL;
         }
     }
@@ -459,11 +471,11 @@ void *monitor_alloc(int ndata, const char *regname, enum pumregtype_t regtype) {
     strcpy(region->name, regname);
 
     // Set port size
-    if (regtype == PUM_REG_POWER)
-        region->size = ndata * sizeof(pumpdata_t);
+    if (regtype == MONITOR_REG_POWER)
+        region->size = ndata * sizeof(monitorpdata_t);
 
-    if (regtype == PUM_REG_TRACES)
-        region->size = ndata * sizeof(pumtdata_t);
+    if (regtype == MONITOR_REG_TRACES)
+        region->size = ndata * sizeof(monitortdata_t);
 
     // Allocate memory for application
     region->data = malloc(region->size);
@@ -472,12 +484,12 @@ void *monitor_alloc(int ndata, const char *regname, enum pumregtype_t regtype) {
     }
 
     // Check port direction flag : POWER
-    if (regtype == PUM_REG_POWER)
-        pumdata->power = region;
+    if (regtype == MONITOR_REG_POWER)
+        monitordata->power = region;
 
     // Check port direction flag : TRACES
-    if (regtype == PUM_REG_TRACES)
-        pumdata->traces = region;
+    if (regtype == MONITOR_REG_TRACES)
+        monitordata->traces = region;
 
     // Return allocated memory
     return region->data;
@@ -506,24 +518,24 @@ err_malloc_region_data:
  *
  */
 int monitor_free(const char *regname) {
-    struct pumRegion_t *region = NULL;
+    struct monitorRegion_t *region = NULL;
 
     // Search for port in port lists
-    if (pumdata->power != NULL){
-        if (strcmp(pumdata->power->name, regname) == 0){
-            region = pumdata->power;
-            pumdata->power = NULL;
+    if (monitordata->power != NULL){
+        if (strcmp(monitordata->power->name, regname) == 0){
+            region = monitordata->power;
+            monitordata->power = NULL;
         }
     }
-    if (pumdata->traces != NULL){
-        if (strcmp(pumdata->traces->name, regname) == 0){
-            region = pumdata->traces;
-            pumdata->traces = NULL;
+    if (monitordata->traces != NULL){
+        if (strcmp(monitordata->traces->name, regname) == 0){
+            region = monitordata->traces;
+            monitordata->traces = NULL;
         }
     }
 
     if (region == NULL) {
-        pum_print_error("[monitor-hw] no region found with name %s\n", regname);
+        monitor_print_error("[monitor-hw] no region found with name %s\n", regname);
         return -ENODEV;
     }
 

@@ -37,11 +37,11 @@ entity events_detector is
 end events_detector;
 
 architecture Behavioral of events_detector is
-    
+
     -- Signal definition
-    signal edges_aux       : std_logic_vector(NUMBER_INPUTS-1 downto 0); 
+    signal edges_aux       : std_logic_vector(NUMBER_INPUTS-1 downto 0);
     signal internal_en     : std_logic;
-    
+
     -- DEBUG
     attribute mark_debug of edges_aux   : signal is "TRUE";
     attribute mark_debug of internal_en : signal is "TRUE";
@@ -50,21 +50,21 @@ begin
 
     -- Instatiation of NUMBER_INPUTS Edge Detector modules
     edge_detections: for i in 0 to NUMBER_INPUTS-1 generate
-        edge_detector_i: entity work.edge_detector 
+        edge_detector_i: entity work.edge_detector
             port map (
                 clk     => clk,
                 rst_n   => rst_n,
                 input   => inputs(i),
                 pulse   => edges_aux(i));
     end generate;
-    
+
     -- Create a synchronized internal enable signal
     enable_detection: process(clk, rst_n)
     begin
-        -- Asynchronous reset        
+        -- Asynchronous reset
         if rst_n = '0' then
             internal_en <= '0';
-        
+
         -- Synchronous process
         elsif clk'event and clk = '1' then
             inputs_delayed <= inputs;
@@ -75,12 +75,12 @@ begin
             end if;
         end if;
     end process;
-    
-    -- Edges output port            
+
+    -- Edges output port
     edges <= edges_aux when internal_en = '1' else (edges'range => '0');
-    
+
     -- Event detection
     event_detected <= '0' when (edges_aux = (edges_aux'range => '0') or internal_en = '0')  else
                       '1';
-                        
+
 end Behavioral;

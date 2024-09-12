@@ -28,8 +28,8 @@ architecture Behavioral of edge_detector is
     -- Signal definitions
     signal r0_input : std_logic;
     signal r1_input : std_logic;
-        
-    -- DEBUG   
+
+    -- DEBUG
     attribute mark_debug of r0_input : signal is "TRUE";
     attribute mark_debug of r1_input : signal is "TRUE";
 
@@ -43,7 +43,7 @@ begin
             -- Reset the registers
             r0_input <= '0';
             r1_input <= '0';
-        
+
         -- Synchronous process
         elsif clk'event and clk = '1' then
             -- Register the input
@@ -52,8 +52,8 @@ begin
             r1_input <= r0_input;
         end if;
     end process;
-    
+
     -- Generate output pulse when an edge is detected
     pulse <= r1_input xor r0_input;
-    
+
 end Behavioral;

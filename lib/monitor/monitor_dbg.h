@@ -16,24 +16,24 @@
 #include <stdio.h>
 
 // If not defined by command line, disable debug
-#ifndef PUM_DEBUG
-    #define PUM_DEBUG 0
+#ifndef MONITOR_DEBUG
+    #define MONITOR_DEBUG 0
 #endif
 
 // Debug messages
-#if PUM_DEBUG
-    #define pum_print_debug(msg, args...) printf(msg, ##args)
-    #define pum_print_info(msg, args...) printf(msg, ##args)
+#if MONITOR_DEBUG
+    #define monitor_print_debug(msg, args...) printf(msg, ##args)
+    #define monitor_print_info(msg, args...) printf(msg, ##args)
 #else
-    #define pum_print_debug(msg, args...)
-    #if PUM_INFO
-        #define pum_print_info(msg, args...) printf(msg, ##args)
+    #define monitor_print_debug(msg, args...)
+    #if MONITOR_INFO
+        #define monitor_print_info(msg, args...) printf(msg, ##args)
     #else
-        #define pum_print_info(msg, args...)
+        #define monitor_print_info(msg, args...)
     #endif
 #endif
 
 // Error messages
-#define pum_print_error(msg, args...) printf(msg, ##args)
+#define monitor_print_error(msg, args...) printf(msg, ##args)
 
 #endif /* _MONITOR_DBG_H_ */

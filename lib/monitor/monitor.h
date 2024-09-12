@@ -23,22 +23,22 @@
  * user applications and monitor hardware memory banks. All memory banks to be
  * accessed need to be declared as pointers to this type.
  *
- *     pumpdata_t *power  = monitor_alloc(ndata, regname, PUM_REG_POWER);
- *     pumtdata_t *traces = monitor_alloc(ndata, regname, PUM_REG_TRACES);
+ *     monitorpdata_t *power  = monitor_alloc(ndata, regname, MONITOR_REG_POWER);
+ *     monitortdata_t *traces = monitor_alloc(ndata, regname, MONITOR_REG_TRACES);
  *
  */
-typedef uint32_t pumpdata_t;
-typedef uint64_t pumtdata_t;
+typedef uint32_t monitorpdata_t;
+typedef uint64_t monitortdata_t;
 
 
 /*
  * MONITOR region type
  *
- * PUM_REG_POWER  - Monitor power data region
- * PUM_REG_TRACES - Monitor traces data region
+ * MONITOR_REG_POWER  - Monitor power data region
+ * MONITOR_REG_TRACES - Monitor traces data region
  *
  */
-enum pumregtype_t {PUM_REG_POWER, PUM_REG_TRACES};
+enum monitorregtype_t {MONITOR_REG_POWER, MONITOR_REG_TRACES};
 
 
 /*
@@ -98,9 +98,17 @@ void monitor_config_2vref();
 void monitor_start();
 
 /*
- * Monitor stop function
+ * Monitor clean function
  *
  * This function cleans the monitor memory banks.
+ *
+ */
+void monitor_clean();
+
+/*
+ * Monitor stop function
+ *
+ * This function stop the monitor acquisition. (only makes sense when power monitoring disabled)
  *
  */
 void monitor_stop();
@@ -234,7 +242,7 @@ int monitor_read_traces(unsigned int ndata);
  * Return : pointer to allocated memory on success, NULL otherwise
  *
  */
-void *monitor_alloc(int ndata, const char *regname, enum pumregtype_t regtype);
+void *monitor_alloc(int ndata, const char *regname, enum monitorregtype_t regtype);
 
 
 /*

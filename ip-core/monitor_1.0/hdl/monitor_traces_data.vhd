@@ -45,7 +45,7 @@ entity monitor_traces_data is
 		S_AXI_AWLEN	: in std_logic_vector(7 downto 0);
 		-- Burst size. This signal indicates the size of each transfer in the burst
 		S_AXI_AWSIZE	: in std_logic_vector(2 downto 0);
-		-- Burst type. The burst type and the size information, 
+		-- Burst type. The burst type and the size information,
     -- determine how the address for each transfer within the burst is calculated.
 		S_AXI_AWBURST	: in std_logic_vector(1 downto 0);
 		-- Lock type. Provides additional information about the
@@ -115,7 +115,7 @@ entity monitor_traces_data is
 		S_AXI_ARLEN	: in std_logic_vector(7 downto 0);
 		-- Burst size. This signal indicates the size of each transfer in the burst
 		S_AXI_ARSIZE	: in std_logic_vector(2 downto 0);
-		-- Burst type. The burst type and the size information, 
+		-- Burst type. The burst type and the size information,
     -- determine how the address for each transfer within the burst is calculated.
 		S_AXI_ARBURST	: in std_logic_vector(1 downto 0);
 		-- Lock type. Provides additional information about the
@@ -289,9 +289,9 @@ architecture arch_imp of monitor_traces_data is
     ------------------------
     -- Additional signals --
     ------------------------
-    
+
     constant FIFO_POLARITY      : std_logic := '0';    -- Me lo solicita ARTICo3
-        
+
     -----------
     -- DEBUG --
     -----------
@@ -754,12 +754,12 @@ begin
     -----------------------------------
     -- Monitor Traces BRAM management --
     -----------------------------------
-          
+
     traces_bram_read_en   <= '1' when (axi_arlen /= 0) or (axi_awlen /= 0) else '0';
     traces_bram_read_addr <= std_logic_vector(axi_araddr) when axi_rvalid_addr = '1' else -- Read operations have priority over write operations, even though they should not happen simultaneously
               std_logic_vector(axi_awaddr) when axi_wvalid = '1' else
               (others => '0');
-        
+
 
     -- Register ARADDR to use it (synchronize it) in the output mux (since BRAMs have a latency of 1 clock cycle, valid data appear when RADDR is RADDR+1)
     araddr_reg: process(S_AXI_ACLK)
@@ -771,6 +771,6 @@ begin
                axi_araddr_pipe <= axi_araddr;
            end if;
        end if;
-    end process;   
+    end process;
 
 end arch_imp;

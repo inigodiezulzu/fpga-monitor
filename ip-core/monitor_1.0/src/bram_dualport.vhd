@@ -102,7 +102,7 @@ begin
             end if;
         end if;
     end process;
-    
+
     -- Port B control logic (READ-FIRST implementation)
     port_b: process(clk_b)
         -- Variable definitions

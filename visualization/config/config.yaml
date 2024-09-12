@@ -1,12 +1,12 @@
 TOOL:
   FILTERING:
-  # Parameters related with the power consupmtion filtering 
+  # Parameters related with the power consupmtion filtering
   # REQUIRED
-    ENABLED: True # True or False
-    ORDER: 5      # Integer
-    FS: 500000    # Integer (Hz)
-    CUTOFF: 25000 # Integer (Hz)
-  OPTIONAL_PARAMETERS: 
+    ENABLED: True     # True or False
+    ORDER: 5          # Integer
+    FS: 500000        # Integer (Hz)
+    CUTOFF: 25000     # Integer (Hz)
+  OPTIONAL_PARAMETERS:
   # Optional parameters
   # Would be requested by the tool if empty
     DUAL_MONITOR_ENABLED: True   # True, False or empty
@@ -16,9 +16,10 @@ TOOL:
     NUMBER_AXI_EVENTS : 0          # Integer or empty
 
 MEASUREMENT_BOARD:
-  # Required parameters
+  # Required parameters (only if ADC_ENABLED is True)
+  ADC_ENABLED: True # True or False
   ADC_REFERENCE_VOLTAGE: 2.5  # Float: 2.5 or 5.0 (vref of the adc)
-  ADC_GAIN: 100               # Float 
+  ADC_GAIN: 100               # Float
   ADC_RESOLUTION: 12          # Integer (ADC resolution bits)
   SHUNT_RESISTOR: 5           # Integer (in mohm)
   SHUNT_RESISTOR_2: 2           # Integer (in mohm)

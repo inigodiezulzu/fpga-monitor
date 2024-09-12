@@ -7,8 +7,11 @@
         __overlay__ {
             monitor_0: monitor@fpga {
                 compatible = "cei.upm,monitor-1.00.a";
-                reg = <0x7ab00000 0x10000 0x20000000 0x10000 0x20010000 0x10000>;
+                reg = <0x7ab00000 0x10000 0x20000000 0x40000 0x20040000 0x20000>;
                 reg-names = "ctrl", "power", "traces";
+                interrupt-parent = <&intc>;
+                interrupts = <0 30 1>;
+                interrupt-names = "irq";
                 dmas = <&dmaPL 0>;
                 dma-names = "pl-dma";
             };
@@ -19,12 +22,12 @@
                 compatible = "xlnx,axi-cdma-4.1", "xlnx,axi-cdma-1.00.a";
                 interrupt-names = "cdma_introut";
                 interrupt-parent = <&intc>;
-                interrupts = <0 30 4>;
+                interrupts = <0 31 4>;
                 reg = <0x7ab10000 0x10000>;
                 xlnx,addrwidth = <0x20>;
                 dma-channel@7ab10000 {
                     compatible = "xlnx,axi-cdma-channel";
-                    interrupts = <0 30 4>;
+                    interrupts = <0 31 4>;
                     xlnx,datawidth = <0x40>;
                     xlnx,max-burst-len = <0x100>;
                 };

@@ -1,12 +1,12 @@
 TOOL:
   FILTERING:
-  # Parameters related with the power consupmtion filtering 
+  # Parameters related with the power consupmtion filtering
   # REQUIRED
     ENABLED: False # True or False
     ORDER: 16      # Integer
     FS: 1000000    # Integer (Hz)
     CUTOFF: 100000 # Integer (Hz)
-  OPTIONAL_PARAMETERS: 
+  OPTIONAL_PARAMETERS:
   # Optional parameters
   # Would be requested by the tool if empty
     AXI_BUS_ENABLED: False        # True, False or empty
@@ -15,9 +15,10 @@ TOOL:
     NUMBER_AXI_EVENTS :           # Integer or empty
 
 MEASUREMENT_BOARD:
-  # Required parameters
+  # Required parameters (only if ADC_ENABLED is True)
+  ADC_ENABLED: True # True or False
   ADC_REFERENCE_VOLTAGE: 5.0  # Float: 2.5 or 5.0 (vref of the adc)
-  ADC_GAIN: 100               # Float 
+  ADC_GAIN: 100               # Float
   ADC_RESOLUTION: 12          # Integer (ADC resolution bits)
   SHUNT_RESISTOR: 2           # Integer (in mohm)
   VDD: 0.85                   # Float (supply voltage of the measured power rail)

@@ -6,23 +6,25 @@ source [file join [file dirname [file dirname [info script]]] gui/power_usage_mo
 proc init_gui { IPINST } {
   ipgui::add_param $IPINST -name "Component_Name"
   #Adding Page
-  set Page_0 [ipgui::add_page $IPINST -name "Page 0" -display_name {Configurable Parameters}]
-  set_property tooltip {Parameters configurable by the user} ${Page_0}
-  set CLK_FREQ [ipgui::add_param $IPINST -name "CLK_FREQ" -parent ${Page_0}]
+  set Configurable_Parameters [ipgui::add_page $IPINST -name "Configurable Parameters"]
+  set_property tooltip {Parameters configurable by the user} ${Configurable_Parameters}
+  set CLK_FREQ [ipgui::add_param $IPINST -name "CLK_FREQ" -parent ${Configurable_Parameters}]
   set_property tooltip {Indicate the system clock frequency in MHz (is the clock in sync with the probes)} ${CLK_FREQ}
   #Adding Group
-  set Power_Consumption_Settings [ipgui::add_group $IPINST -name "Power Consumption Settings" -parent ${Page_0} -display_name {Power Traces Settings}]
-  set SCLK_FREQ [ipgui::add_param $IPINST -name "SCLK_FREQ" -parent ${Power_Consumption_Settings}]
+  set Power_Traces_Settings [ipgui::add_group $IPINST -name "Power Traces Settings" -parent ${Configurable_Parameters}]
+  set ADC_ENABLE [ipgui::add_param $IPINST -name "ADC_ENABLE" -parent ${Power_Traces_Settings}]
+  set_property tooltip {True: power monitoring enabled | False: power monitoring disabled} ${ADC_ENABLE}
+  set SCLK_FREQ [ipgui::add_param $IPINST -name "SCLK_FREQ" -parent ${Power_Traces_Settings}]
   set_property tooltip {Desired SPI SCLK frequency in MHz (the system will set the closest possible below it)} ${SCLK_FREQ}
-  set POWER_DEPTH [ipgui::add_param $IPINST -name "POWER_DEPTH" -parent ${Power_Consumption_Settings}]
+  set POWER_DEPTH [ipgui::add_param $IPINST -name "POWER_DEPTH" -parent ${Power_Traces_Settings}]
   set_property tooltip {Number of power consumption samples to capture} ${POWER_DEPTH}
-  set ADC_DUAL [ipgui::add_param $IPINST -name "ADC_DUAL" -parent ${Power_Consumption_Settings}]
+  set ADC_DUAL [ipgui::add_param $IPINST -name "ADC_DUAL" -parent ${Power_Traces_Settings}]
   set_property tooltip {True: ADC working in dual-channel mode | False: ADC working in single-channel mode} ${ADC_DUAL}
-  set ADC_VREF_IS_DOUBLE [ipgui::add_param $IPINST -name "ADC_VREF_IS_DOUBLE" -parent ${Power_Consumption_Settings}]
+  set ADC_VREF_IS_DOUBLE [ipgui::add_param $IPINST -name "ADC_VREF_IS_DOUBLE" -parent ${Power_Traces_Settings}]
   set_property tooltip {True: VRef = 5.0 V | False: VRef = 2.5 V} ${ADC_VREF_IS_DOUBLE}
 
   #Adding Group
-  set Performance_Traces_Settings [ipgui::add_group $IPINST -name "Performance Traces Settings" -parent ${Page_0}]
+  set Performance_Traces_Settings [ipgui::add_group $IPINST -name "Performance Traces Settings" -parent ${Configurable_Parameters}]
   set NUMBER_PROBES [ipgui::add_param $IPINST -name "NUMBER_PROBES" -parent ${Performance_Traces_Settings}]
   set_property tooltip {Number of 1-bit signals to monitor} ${NUMBER_PROBES}
   set COUNTER_BITS [ipgui::add_param $IPINST -name "COUNTER_BITS" -parent ${Performance_Traces_Settings} -widget comboBox]
@@ -31,9 +33,9 @@ proc init_gui { IPINST } {
   set_property tooltip {Number of performance traces samples to capture} ${TRACES_DEPTH}
 
   #Adding Group
-  set AXI_Monitoring_Settings [ipgui::add_group $IPINST -name "AXI Monitoring Settings" -parent ${Page_0} -layout horizontal]
+  set AXI_Monitoring_Settings [ipgui::add_group $IPINST -name "AXI Monitoring Settings" -parent ${Configurable_Parameters} -layout horizontal]
   set AXI_SNIFFER_ENABLE [ipgui::add_param $IPINST -name "AXI_SNIFFER_ENABLE" -parent ${AXI_Monitoring_Settings}]
-  set_property tooltip {True: AXI bus monitoring enabled | False: AXI bus monitoring disabled} ${AXI_SNIFFER_ENABLE}
+  set_property tooltip {True: AXI bus monitoring enabled | False AXI bus monitoring disabled} ${AXI_SNIFFER_ENABLE}
   set AXI_SNIFFER_DATA_WIDTH [ipgui::add_param $IPINST -name "AXI_SNIFFER_DATA_WIDTH" -parent ${AXI_Monitoring_Settings}]
   set_property tooltip {Number of bits monitored from the AXI Sniffer Bus} ${AXI_SNIFFER_DATA_WIDTH}
 
@@ -60,11 +62,11 @@ proc init_gui { IPINST } {
   set C_S02_AXI_DATA_WIDTH [ipgui::add_param $IPINST -name "C_S02_AXI_DATA_WIDTH" -parent ${Traces_Data_(AXI_S02)}]
   set_property tooltip {Width of Traces data bus} ${C_S02_AXI_DATA_WIDTH}
   set C_S02_AXI_ADDR_WIDTH [ipgui::add_param $IPINST -name "C_S02_AXI_ADDR_WIDTH" -parent ${Traces_Data_(AXI_S02)}]
-  set_property tooltip {Width of S_AXI address bus} ${C_S02_AXI_ADDR_WIDTH}
+  set_property tooltip {Width of Traces address bus} ${C_S02_AXI_ADDR_WIDTH}
 
 
   set INTERRUPT_ENABLE [ipgui::add_param $IPINST -name "INTERRUPT_ENABLE"]
-  set_property tooltip {True: Interrupt enabled | False: Interrupt disabled} ${INTERRUPT_ENABLE}
+  set_property tooltip {True: interrupt enabled | False: interrupt disabled} ${INTERRUPT_ENABLE}
 
 }
 
@@ -82,15 +84,17 @@ proc validate_PARAM_VALUE.AXI_SNIFFER_DATA_WIDTH { PARAM_VALUE.AXI_SNIFFER_DATA_
 	return true
 }
 
-proc update_PARAM_VALUE.C_S01_AXI_ADDR_WIDTH { PARAM_VALUE.C_S01_AXI_ADDR_WIDTH PARAM_VALUE.POWER_DEPTH PARAM_VALUE.C_S01_AXI_DATA_WIDTH } {
+proc update_PARAM_VALUE.C_S01_AXI_ADDR_WIDTH { PARAM_VALUE.C_S01_AXI_ADDR_WIDTH PARAM_VALUE.ADC_ENABLE PARAM_VALUE.POWER_DEPTH PARAM_VALUE.C_S01_AXI_DATA_WIDTH } {
 	# Procedure called to update C_S01_AXI_ADDR_WIDTH when any of the dependent parameters in the arguments change
 	
 	set C_S01_AXI_ADDR_WIDTH ${PARAM_VALUE.C_S01_AXI_ADDR_WIDTH}
+	set ADC_ENABLE ${PARAM_VALUE.ADC_ENABLE}
 	set POWER_DEPTH ${PARAM_VALUE.POWER_DEPTH}
 	set C_S01_AXI_DATA_WIDTH ${PARAM_VALUE.C_S01_AXI_DATA_WIDTH}
+	set values(ADC_ENABLE) [get_property value $ADC_ENABLE]
 	set values(POWER_DEPTH) [get_property value $POWER_DEPTH]
 	set values(C_S01_AXI_DATA_WIDTH) [get_property value $C_S01_AXI_DATA_WIDTH]
-	set_property value [gen_USERPARAMETER_C_S01_AXI_ADDR_WIDTH_VALUE $values(POWER_DEPTH) $values(C_S01_AXI_DATA_WIDTH)] $C_S01_AXI_ADDR_WIDTH
+	set_property value [gen_USERPARAMETER_C_S01_AXI_ADDR_WIDTH_VALUE $values(ADC_ENABLE) $values(POWER_DEPTH) $values(C_S01_AXI_DATA_WIDTH)] $C_S01_AXI_ADDR_WIDTH
 }
 
 proc validate_PARAM_VALUE.C_S01_AXI_ADDR_WIDTH { PARAM_VALUE.C_S01_AXI_ADDR_WIDTH } {
@@ -138,6 +142,15 @@ proc update_PARAM_VALUE.ADC_DUAL { PARAM_VALUE.ADC_DUAL } {
 
 proc validate_PARAM_VALUE.ADC_DUAL { PARAM_VALUE.ADC_DUAL } {
 	# Procedure called to validate ADC_DUAL
+	return true
+}
+
+proc update_PARAM_VALUE.ADC_ENABLE { PARAM_VALUE.ADC_ENABLE } {
+	# Procedure called to update ADC_ENABLE when any of the dependent parameters in the arguments change
+}
+
+proc validate_PARAM_VALUE.ADC_ENABLE { PARAM_VALUE.ADC_ENABLE } {
+	# Procedure called to validate ADC_ENABLE
 	return true
 }
 
@@ -606,5 +619,10 @@ proc update_MODELPARAM_VALUE.C_M_SNIFFER_OUT_AXI_DATA_WIDTH { MODELPARAM_VALUE.C
 proc update_MODELPARAM_VALUE.C_M_SNIFFER_OUT_AXI_ADDR_WIDTH { MODELPARAM_VALUE.C_M_SNIFFER_OUT_AXI_ADDR_WIDTH PARAM_VALUE.C_M_SNIFFER_OUT_AXI_ADDR_WIDTH } {
 	# Procedure called to set VHDL generic/Verilog parameter value(s) based on TCL parameter value
 	set_property value [get_property value ${PARAM_VALUE.C_M_SNIFFER_OUT_AXI_ADDR_WIDTH}] ${MODELPARAM_VALUE.C_M_SNIFFER_OUT_AXI_ADDR_WIDTH}
+}
+
+proc update_MODELPARAM_VALUE.ADC_ENABLE { MODELPARAM_VALUE.ADC_ENABLE PARAM_VALUE.ADC_ENABLE } {
+	# Procedure called to set VHDL generic/Verilog parameter value(s) based on TCL parameter value
+	set_property value [get_property value ${PARAM_VALUE.ADC_ENABLE}] ${MODELPARAM_VALUE.ADC_ENABLE}
 }
 

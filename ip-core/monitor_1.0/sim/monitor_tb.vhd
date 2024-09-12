@@ -1,5 +1,5 @@
 -----------------------------------------------------------------------------
--- Monitor Infrastucture Testbench                                         -- 
+-- Monitor Infrastucture Testbench                                         --
 --                                                                         --
 -- Author: Juan Encinas <juan.encinas@upm.es>                              --
 --                                                                         --
@@ -26,8 +26,9 @@ architecture tb of monitor_tb is
     signal clk_tb       : std_logic := '0';
     constant CLK_PERIOD : time := 10 ns;
     constant CLK_DELAY  : time := 0.1 * CLK_PERIOD;
-    constant ADC_DUAL   : boolean := true;    
-    
+    constant ADC_ENABLE : boolean := true;
+    constant ADC_DUAL   : boolean := true;
+
     -- Counter signals
     signal rst_n_tb                   : std_logic;
     signal user_config_vref_tb        : std_logic_vector(1 downto 0);
@@ -46,9 +47,9 @@ architecture tb of monitor_tb is
     signal power_bram_read_addr_tb    : std_logic_vector(6 downto 0) := (others => '0');
     signal traces_bram_read_addr_tb   : std_logic_vector(31 downto 0) := (others => '0');
     signal power_bram_read_dout_tb    : std_logic_vector(31 downto 0);
-    signal traces_bram_read_dout_tb   : std_logic_vector(63 downto 0); 
+    signal traces_bram_read_dout_tb   : std_logic_vector(63 downto 0);
     signal power_bram_utilization_tb  : std_logic_vector(6 downto 0);
-    signal traces_bram_utilization_tb : std_logic_vector(31 downto 0); 
+    signal traces_bram_utilization_tb : std_logic_vector(31 downto 0);
     signal SPI_CS_n_tb                : std_logic;
     signal SPI_SCLK_tb                : std_logic;
     signal SPI_MISO_tb                : std_logic := '0';
@@ -61,6 +62,7 @@ begin
         generic map (
             CLK_FREQ               => 100,
             SCLK_FREQ              => 20,
+            ADC_ENABLE             => ADC_ENABLE,
             ADC_DUAL               => ADC_DUAL,
             ADC_VREF_IS_DOUBLE     => false,
             COUNTER_BITS           => 32,
@@ -101,17 +103,17 @@ begin
             SPI_MISO                => SPI_MISO_tb,
             SPI_MOSI                => SPI_MOSI_tb
         );
-    
+
     -- Generate TB clock
     clk_tb <= not clk_tb after CLK_PERIOD/2;
-    
+
     -- Generate TB reset
     rst_n_tb <= '0', '1' after 20 ns;
-    
+
     -- TB stimulus
     stimulus: process
     begin
-    
+
         -- Initial values
         user_config_vref_tb <= "00";
         start_tb            <= '0';
@@ -120,46 +122,46 @@ begin
         probes_mask_tb      <= (others => '0');
         axi_sniffer_en_tb   <= '0';
         axi_sniffer_mask_tb <= (others => '0');
-            
+
         -- Wait for ADC to be initially configured
         wait until busy_tb = '0';
         wait for CLK_DELAY;
-        
+
         -- Test user configuration
         user_config_vref_tb <= "01";
         wait until clk_tb = '1';
         wait for CLK_DELAY;
         user_config_vref_tb <= "00";
-        
+
         assert busy_tb = '1' and done_tb = '0'
             report "User config error!"
             severity failure;
-            
+
         wait until busy_tb = '0';
         wait for CLK_DELAY;
-        
+
         -- Test start
         start_tb <= '1';
         wait until clk_tb = '1';
         wait for CLK_DELAY;
         start_tb <= '0';
-        
+
         assert busy_tb = '1' and done_tb = '0'
             report "Start error!"
             severity failure;
-        
+
         -- Test stop (full power)
         wait until done_tb = '1';
-            
+
         wait for 50 * CLK_PERIOD;
         stop_tb <= '1';
         wait until clk_tb = '1';
         wait for CLK_DELAY;
         stop_tb <= '0';
-        
+
         wait until clk_tb = '1';
         wait for CLK_DELAY;
-              
+
         if ADC_DUAL = true then
             assert done_tb = '0'
                 report "Stop error!"
@@ -170,130 +172,130 @@ begin
                 report "Stop error!"
                 severity failure;
         end if;
-                
+
         wait for 50 * CLK_PERIOD;
         wait until clk_tb = '1';
         wait for CLK_DELAY;
-        
+
         -- Test probe start
         probes_mask_tb <= "01";
         wait until clk_tb = '1';
         wait for CLK_DELAY;
-        
+
         probes_tb(6) <= '1';
         wait until clk_tb = '1';
         wait for CLK_DELAY;
-        
+
         assert busy_tb = '0' and done_tb = '0'
             report "false start"
             severity failure;
-            
+
         wait for 5 * CLK_PERIOD;
         wait until clk_tb = '1';
         wait for CLK_DELAY;
-            
+
         probes_tb(5) <= '1';
         wait until clk_tb = '1';
         wait for CLK_DELAY;
         probes_tb(5) <= '0';
-        
+
         -- There is one clk cycle of delay (changing state)
         wait until clk_tb = '1';
         wait for CLK_DELAY;
-         
+
         assert busy_tb = '1' and done_tb = '0'
             report "No-start error"
             severity failure;
-                    
+
         for i in 0 to 19 loop
-        
+
             probes_tb(5) <= not probes_tb(5);
             wait until clk_tb = '1';
             wait for CLK_DELAY;
-        
-        end loop;      
-        
+
+        end loop;
+
         -- There is one cycle of delay
         wait until clk_tb = '1';
         wait for CLK_PERIOD;
-        
-        assert done_tb = '1' 
+
+        assert done_tb = '1'
             report "Traces Full error"
             severity failure;
-            
+
         wait until clk_tb = '1';
         wait for CLK_DELAY;
         stop_tb <= '1';
         wait until clk_tb = '1';
         wait for CLK_DELAY;
         stop_tb <= '0';
-            
+
         wait until busy_tb = '0';
         wait for 5 * CLK_PERIOD;
-                
+
         -- Test AXI start
         axi_sniffer_en_tb   <= '1';
         probes_mask_tb <= "00";
         axi_sniffer_mask_tb <= "11100";
         wait until clk_tb = '1';
         wait for CLK_DELAY;
-        
+
         probes_tb(0) <= '1';
         wait until clk_tb = '1';
         wait for CLK_DELAY;
-        
+
         assert busy_tb = '0' and done_tb = '0'
             report "false start"
             severity failure;
-            
+
         wait for 5 * CLK_PERIOD;
         wait until clk_tb = '1';
         wait for CLK_DELAY;
-            
+
         probes_tb(4 downto 0) <= "11100";
         wait until clk_tb = '1';
         wait for CLK_DELAY;
         probes_tb(4 downto 0) <= "00000";
-        
+
         -- There is one clk cycle of delay (changing state)
         wait until clk_tb = '1';
         wait for CLK_DELAY;
-         
+
         assert busy_tb = '1' and done_tb = '0'
             report "No-start error"
             severity failure;
-                    
+
         for i in 0 to 19 loop
-                    
+
             probes_tb(4 downto 0) <= not probes_tb(4 downto 0);
             wait until clk_tb = '1';
             wait for CLK_DELAY;
-        
-        end loop;      
-        
+
+        end loop;
+
         -- There is one cycle of delay
         wait until clk_tb = '1';
         wait for CLK_PERIOD;
-        
-        assert done_tb = '1' 
+
+        assert done_tb = '1'
             report "Traces Full error"
             severity failure;
-            
+
         wait until clk_tb = '1';
         wait for CLK_DELAY;
         stop_tb <= '1';
         wait until clk_tb = '1';
         wait for CLK_DELAY;
         stop_tb <= '0';
-            
+
         wait until busy_tb = '0';
         wait for 5 * CLK_PERIOD;
-        
-        -- Success    
+
+        -- Success
         assert false
             report "Successfully tested!!"
             severity failure;
-                  
+
     end process;
-            
+
 end tb;

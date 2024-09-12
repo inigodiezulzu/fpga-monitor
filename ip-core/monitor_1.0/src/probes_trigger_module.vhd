@@ -1,5 +1,5 @@
 -----------------------------------------------------------------------------
--- Probes Trigger Module                                                   -- 
+-- Probes Trigger Module                                                   --
 --                                                                         --
 -- Author: Juan Encinas <juan.encinas@upm.es>                              --
 --                                                                         --
@@ -19,7 +19,7 @@ entity probes_trigger_module is
         clk     : in std_logic;
         rst_n   : in std_logic;
         -- Enable signal
-        en      : in std_logic; 
+        en      : in std_logic;
         -- Input signals
         inputs  : in std_logic_vector(NUMBER_INPUTS-1 downto 0);
         -- Comparison mask
@@ -46,7 +46,7 @@ begin
         if rst_n = '0' then
             -- Trigger is LOW by default
             trigger <= '0';
-            
+
         -- Sychronous process
         elsif clk'event and clk = '1' then
             -- Detection is only performed when enabled
@@ -63,5 +63,5 @@ begin
             end if;
         end if;
     end process;
-                
+
 end Behavioral;

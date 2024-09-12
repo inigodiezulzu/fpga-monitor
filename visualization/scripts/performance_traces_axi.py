@@ -1,9 +1,16 @@
 import struct
+import os
 
 # Parse axi performance traces file
 def parse_file():
 
     i = 0
+
+    try:
+        # Make temporal directory for parsed data if not there (ADC_ENABLED is False)
+        os.makedirs(os.getcwd() + "/parsed_data")
+    except:
+        pass
 
     # Open a file to store traces after converting them from binary to integer
     performance_store_file = open("parsed_data/sig.txt", "w+")

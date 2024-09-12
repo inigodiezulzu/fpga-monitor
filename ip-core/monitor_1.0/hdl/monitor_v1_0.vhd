@@ -7,6 +7,7 @@ entity monitor_v1_0 is
 		-- Users to add parameters here
         CLK_FREQ               : integer := 100;        -- Clock frequency in Hz
         SCLK_FREQ              : integer := 20;         -- SPI Clock frequency in Hz
+        ADC_ENABLE             : boolean := true;       -- Power consumption monitoring enable (true, false)
         ADC_DUAL               : boolean := true;       -- Indicate if the ADC uses two channels (1 and 3) [true] or just one (0-USB) [false]
         ADC_VREF_IS_DOUBLE     : boolean := false;      -- Indicate the ADC voltage reference (false: 2.5V, true: 5.0V)
         COUNTER_BITS           : integer := 32;         -- Number of bits used for the counter count
@@ -349,68 +350,71 @@ begin
         );
 
     -- Instantiation of Axi Bus Interface S01_AXI
-    monitor_power_data : entity work.monitor_power_data
-        generic map (
-            C_S_AXI_ID_WIDTH	=> C_S01_AXI_ID_WIDTH,
-            C_S_AXI_DATA_WIDTH	=> C_S01_AXI_DATA_WIDTH,
-            C_S_AXI_ADDR_WIDTH	=> C_S01_AXI_ADDR_WIDTH,
-            C_S_AXI_AWUSER_WIDTH	=> C_S01_AXI_AWUSER_WIDTH,
-            C_S_AXI_ARUSER_WIDTH	=> C_S01_AXI_ARUSER_WIDTH,
-            C_S_AXI_WUSER_WIDTH	=> C_S01_AXI_WUSER_WIDTH,
-            C_S_AXI_RUSER_WIDTH	=> C_S01_AXI_RUSER_WIDTH,
-            C_S_AXI_BUSER_WIDTH	=> C_S01_AXI_BUSER_WIDTH
-        )
-        port map (
-            power_bram_read_en   => power_bram_read_en,
-            power_bram_read_addr => power_bram_read_addr,
-            power_bram_read_dout => power_bram_read_dout,
-            S_AXI_ACLK	=> s01_axi_aclk,
-            S_AXI_ARESETN	=> s01_axi_aresetn,
-            S_AXI_AWID	=> s01_axi_awid,
-            S_AXI_AWADDR	=> s01_axi_awaddr,
-            S_AXI_AWLEN	=> s01_axi_awlen,
-            S_AXI_AWSIZE	=> s01_axi_awsize,
-            S_AXI_AWBURST	=> s01_axi_awburst,
-            S_AXI_AWLOCK	=> s01_axi_awlock,
-            S_AXI_AWCACHE	=> s01_axi_awcache,
-            S_AXI_AWPROT	=> s01_axi_awprot,
-            S_AXI_AWQOS	=> s01_axi_awqos,
-            S_AXI_AWREGION	=> s01_axi_awregion,
-            S_AXI_AWUSER	=> s01_axi_awuser,
-            S_AXI_AWVALID	=> s01_axi_awvalid,
-            S_AXI_AWREADY	=> s01_axi_awready,
-            S_AXI_WDATA	=> s01_axi_wdata,
-            S_AXI_WSTRB	=> s01_axi_wstrb,
-            S_AXI_WLAST	=> s01_axi_wlast,
-            S_AXI_WUSER	=> s01_axi_wuser,
-            S_AXI_WVALID	=> s01_axi_wvalid,
-            S_AXI_WREADY	=> s01_axi_wready,
-            S_AXI_BID	=> s01_axi_bid,
-            S_AXI_BRESP	=> s01_axi_bresp,
-            S_AXI_BUSER	=> s01_axi_buser,
-            S_AXI_BVALID	=> s01_axi_bvalid,
-            S_AXI_BREADY	=> s01_axi_bready,
-            S_AXI_ARID	=> s01_axi_arid,
-            S_AXI_ARADDR	=> s01_axi_araddr,
-            S_AXI_ARLEN	=> s01_axi_arlen,
-            S_AXI_ARSIZE	=> s01_axi_arsize,
-            S_AXI_ARBURST	=> s01_axi_arburst,
-            S_AXI_ARLOCK	=> s01_axi_arlock,
-            S_AXI_ARCACHE	=> s01_axi_arcache,
-            S_AXI_ARPROT	=> s01_axi_arprot,
-            S_AXI_ARQOS	=> s01_axi_arqos,
-            S_AXI_ARREGION	=> s01_axi_arregion,
-            S_AXI_ARUSER	=> s01_axi_aruser,
-            S_AXI_ARVALID	=> s01_axi_arvalid,
-            S_AXI_ARREADY	=> s01_axi_arready,
-            S_AXI_RID	=> s01_axi_rid,
-            S_AXI_RDATA	=> s01_axi_rdata,
-            S_AXI_RRESP	=> s01_axi_rresp,
-            S_AXI_RLAST	=> s01_axi_rlast,
-            S_AXI_RUSER	=> s01_axi_ruser,
-            S_AXI_RVALID	=> s01_axi_rvalid,
-            S_AXI_RREADY	=> s01_axi_rready
-        );
+    power_enabler: if ADC_ENABLE = true generate
+
+        monitor_power_data : entity work.monitor_power_data
+            generic map (
+                C_S_AXI_ID_WIDTH	=> C_S01_AXI_ID_WIDTH,
+                C_S_AXI_DATA_WIDTH	=> C_S01_AXI_DATA_WIDTH,
+                C_S_AXI_ADDR_WIDTH	=> C_S01_AXI_ADDR_WIDTH,
+                C_S_AXI_AWUSER_WIDTH	=> C_S01_AXI_AWUSER_WIDTH,
+                C_S_AXI_ARUSER_WIDTH	=> C_S01_AXI_ARUSER_WIDTH,
+                C_S_AXI_WUSER_WIDTH	=> C_S01_AXI_WUSER_WIDTH,
+                C_S_AXI_RUSER_WIDTH	=> C_S01_AXI_RUSER_WIDTH,
+                C_S_AXI_BUSER_WIDTH	=> C_S01_AXI_BUSER_WIDTH
+            )
+            port map (
+                power_bram_read_en   => power_bram_read_en,
+                power_bram_read_addr => power_bram_read_addr,
+                power_bram_read_dout => power_bram_read_dout,
+                S_AXI_ACLK	=> s01_axi_aclk,
+                S_AXI_ARESETN	=> s01_axi_aresetn,
+                S_AXI_AWID	=> s01_axi_awid,
+                S_AXI_AWADDR	=> s01_axi_awaddr,
+                S_AXI_AWLEN	=> s01_axi_awlen,
+                S_AXI_AWSIZE	=> s01_axi_awsize,
+                S_AXI_AWBURST	=> s01_axi_awburst,
+                S_AXI_AWLOCK	=> s01_axi_awlock,
+                S_AXI_AWCACHE	=> s01_axi_awcache,
+                S_AXI_AWPROT	=> s01_axi_awprot,
+                S_AXI_AWQOS	=> s01_axi_awqos,
+                S_AXI_AWREGION	=> s01_axi_awregion,
+                S_AXI_AWUSER	=> s01_axi_awuser,
+                S_AXI_AWVALID	=> s01_axi_awvalid,
+                S_AXI_AWREADY	=> s01_axi_awready,
+                S_AXI_WDATA	=> s01_axi_wdata,
+                S_AXI_WSTRB	=> s01_axi_wstrb,
+                S_AXI_WLAST	=> s01_axi_wlast,
+                S_AXI_WUSER	=> s01_axi_wuser,
+                S_AXI_WVALID	=> s01_axi_wvalid,
+                S_AXI_WREADY	=> s01_axi_wready,
+                S_AXI_BID	=> s01_axi_bid,
+                S_AXI_BRESP	=> s01_axi_bresp,
+                S_AXI_BUSER	=> s01_axi_buser,
+                S_AXI_BVALID	=> s01_axi_bvalid,
+                S_AXI_BREADY	=> s01_axi_bready,
+                S_AXI_ARID	=> s01_axi_arid,
+                S_AXI_ARADDR	=> s01_axi_araddr,
+                S_AXI_ARLEN	=> s01_axi_arlen,
+                S_AXI_ARSIZE	=> s01_axi_arsize,
+                S_AXI_ARBURST	=> s01_axi_arburst,
+                S_AXI_ARLOCK	=> s01_axi_arlock,
+                S_AXI_ARCACHE	=> s01_axi_arcache,
+                S_AXI_ARPROT	=> s01_axi_arprot,
+                S_AXI_ARQOS	=> s01_axi_arqos,
+                S_AXI_ARREGION	=> s01_axi_arregion,
+                S_AXI_ARUSER	=> s01_axi_aruser,
+                S_AXI_ARVALID	=> s01_axi_arvalid,
+                S_AXI_ARREADY	=> s01_axi_arready,
+                S_AXI_RID	=> s01_axi_rid,
+                S_AXI_RDATA	=> s01_axi_rdata,
+                S_AXI_RRESP	=> s01_axi_rresp,
+                S_AXI_RLAST	=> s01_axi_rlast,
+                S_AXI_RUSER	=> s01_axi_ruser,
+                S_AXI_RVALID	=> s01_axi_rvalid,
+                S_AXI_RREADY	=> s01_axi_rready
+            );
+    end generate;
 
     -- Instantiation of Axi Bus Interface S02_AXI
     monitor_traces_data : entity work.monitor_traces_data
@@ -483,6 +487,7 @@ begin
         generic map (
             CLK_FREQ               => CLK_FREQ,
             SCLK_FREQ              => SCLK_FREQ,
+            ADC_ENABLE             => ADC_ENABLE,
             ADC_DUAL               => ADC_DUAL,
             ADC_VREF_IS_DOUBLE     => ADC_VREF_IS_DOUBLE,
             COUNTER_BITS           => COUNTER_BITS,
@@ -560,7 +565,6 @@ begin
 
     -- AXI BUS SNIFFER LOGIC
     axi_sniffer_enabler: if AXI_SNIFFER_ENABLE = true generate
-    begin
 
         -- This should be configurable from the user side in a future version
         axi_sniffer_signals <= s_sniffer_in_axi_awaddr(21 downto 0) & s_sniffer_in_axi_wdata(7 downto 0) & s_sniffer_in_axi_wvalid & m_sniffer_out_axi_wready;

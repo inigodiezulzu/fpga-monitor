@@ -12,7 +12,7 @@ entity counter is
     generic (
         BITS : integer := 32 -- Number of bits used by the counter
     );
-    port ( 
+    port (
         -- Clock and reset signals
         clk     : in std_logic;
         rst_n   : in std_logic;
@@ -34,7 +34,7 @@ architecture Behavioral of counter is
     -- Signal definitions
     signal count_aux    : unsigned(count'RANGE);
     signal count_enable : std_logic;
-    
+
     -- DEBUG
     attribute mark_debug of count_aux    : signal is "TRUE";
     attribute mark_debug of count_enable : signal is "TRUE";
@@ -48,7 +48,7 @@ begin
         if rst_n = '0' then
             -- Reset the count
             count_aux <= (others => '0');
-            
+
         -- Sychronous process
         elsif clk'event and clk = '1' then
             -- Reset the count when clr
@@ -60,8 +60,8 @@ begin
             end if;
         end if;
     end process;
-    
+
     -- Assign the internal signal to the output port (converting from unsignedl to slv)
-    count <= std_logic_vector(count_aux);    
+    count <= std_logic_vector(count_aux);
 
 end Behavioral;

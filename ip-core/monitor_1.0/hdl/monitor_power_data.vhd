@@ -46,7 +46,7 @@ entity monitor_power_data is
 		S_AXI_AWLEN	: in std_logic_vector(7 downto 0);
 		-- Burst size. This signal indicates the size of each transfer in the burst
 		S_AXI_AWSIZE	: in std_logic_vector(2 downto 0);
-		-- Burst type. The burst type and the size information, 
+		-- Burst type. The burst type and the size information,
     -- determine how the address for each transfer within the burst is calculated.
 		S_AXI_AWBURST	: in std_logic_vector(1 downto 0);
 		-- Lock type. Provides additional information about the
@@ -116,7 +116,7 @@ entity monitor_power_data is
 		S_AXI_ARLEN	: in std_logic_vector(7 downto 0);
 		-- Burst size. This signal indicates the size of each transfer in the burst
 		S_AXI_ARSIZE	: in std_logic_vector(2 downto 0);
-		-- Burst type. The burst type and the size information, 
+		-- Burst type. The burst type and the size information,
     -- determine how the address for each transfer within the burst is calculated.
 		S_AXI_ARBURST	: in std_logic_vector(1 downto 0);
 		-- Lock type. Provides additional information about the
@@ -761,7 +761,7 @@ begin
     power_bram_read_addr <= std_logic_vector(axi_araddr) when axi_rvalid_addr = '1' else -- Read operations have priority over write operations, even though they should not happen simultaneously
               std_logic_vector(axi_awaddr) when axi_wvalid = '1' else
               (others => '0');
-        
+
 
     -- Register ARADDR to use it (synchronize it) in the output mux (since BRAMs have a latency of 1 clock cycle, valid data appear when RADDR is RADDR+1)
     araddr_reg: process(S_AXI_ACLK)

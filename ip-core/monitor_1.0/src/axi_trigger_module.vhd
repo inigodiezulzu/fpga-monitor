@@ -1,5 +1,5 @@
 -----------------------------------------------------------------------------
--- AXI Trigger Module                                                      -- 
+-- AXI Trigger Module                                                      --
 --                                                                         --
 -- Author: Juan Encinas <juan.encinas@upm.es>                              --
 --                                                                         --
@@ -22,7 +22,7 @@ entity axi_trigger_module is
         rst_n   : in std_logic;
         -- Enable signal
         en      : in std_logic;
-        -- Input signals 
+        -- Input signals
         inputs  : in std_logic_vector (NUMBER_INPUTS-1 downto 0);
         -- Comparison mask
         mask    : in std_logic_vector (NUMBER_INPUTS-1 downto 0);
@@ -48,7 +48,7 @@ begin
             if rst_n = '0' then
                 -- Trigger is 0 by default
                 trigger <= '0';
-                
+
             -- Synchronous process
             elsif clk'event and clk = '1' then
                 -- Detection is only performed when enabled
@@ -64,5 +64,5 @@ begin
                 end if;
             end if;
     end process;
-                
+
 end Behavioral;

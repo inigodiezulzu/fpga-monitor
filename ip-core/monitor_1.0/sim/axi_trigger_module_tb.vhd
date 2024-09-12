@@ -1,5 +1,5 @@
 -----------------------------------------------------------------------------
--- Monitor - AXI Trigger Module Testbench                                  -- 
+-- Monitor - AXI Trigger Module Testbench                                  --
 --                                                                         --
 -- Author: Juan Encinas <juan.encinas@upm.es>                              --
 --                                                                         --
@@ -13,21 +13,21 @@ use ieee.numeric_std.all;
 
 entity axi_trigger_module_tb is
 end axi_trigger_module_tb;
-           
+
 architecture tb of axi_trigger_module_tb is
 
     -- Clock related signals and constants
     signal clk_tb       : std_logic := '0';
     constant CLK_PERIOD : time := 10 ns;
     constant CLK_DELTA  : time := 0.1 * CLK_PERIOD;
-    
+
     -- Edge detector signals
     signal rst_n_tb   : std_logic;
     signal en_tb      : std_logic;
     signal inputs_tb  : std_logic_vector (2 downto 0);
     signal mask_tb    : std_logic_vector (2 downto 0);
     signal trigger_tb : std_logic;
-    
+
 begin
 
     -- Instantiation of the Unit Under Test (probes trigger module)
@@ -41,44 +41,44 @@ begin
         mask    => mask_tb,
         trigger => trigger_tb
     );
-    
+
     -- Generate TB clock
     clk_tb <= not clk_tb after CLK_PERIOD/2;
-    
+
     -- Generate TB reset
     rst_n_tb <= '0', '1' after 20 ns;
-    
+
     -- TB stimulus
     stimulus: process
     begin
-        
+
         -- Initial values
         en_tb     <= '0';
-        inputs_tb <= (others => '0'); 
+        inputs_tb <= (others => '0');
         mask_tb   <= (others => '0');
-        
+
         wait for 50 ns;
-        
+
         en_tb <= '1';
         wait until clk_tb'event and clk_tb = '1';
         wait for CLK_DELTA;
-        
-        
+
+
         wait for 50 ns;
-                
+
         -- Test trigger
-       
+
         for i in 0 to 7 loop
-        
-            mask_tb <= std_logic_vector(to_unsigned(i, mask_tb'length));  
+
+            mask_tb <= std_logic_vector(to_unsigned(i, mask_tb'length));
             wait until clk_tb'event and clk_tb = '1';
             wait for CLK_DELTA;
-        
+
             for j in 0 to 7 loop
-                inputs_tb <= std_logic_vector(to_unsigned(j, inputs_tb'length));        
+                inputs_tb <= std_logic_vector(to_unsigned(j, inputs_tb'length));
                 wait until clk_tb'event and clk_tb = '1';
                 wait for CLK_DELTA;
-                
+
                 if inputs_tb = mask_tb then
                     assert trigger_tb = '1'
                         report "Trigger ON error"
@@ -89,14 +89,14 @@ begin
                         severity failure;
                 end if;
            end loop;
-            
+
         end loop;
-        
-        -- Success                
+
+        -- Success
         assert false
             report "Successfully tested!!"
             severity failure;
-            
+
     end process;
-            
+
 end tb;

@@ -24,8 +24,8 @@
  */
 void monitor_hw_config_vref() {
 
-    monitor_hw[PUM_REG0] = PUM_CONFIG_VREF;  
-    pum_print_debug("[monitor-hw] set ADC reference voltage to 2.5V\n");   
+    monitor_hw[MONITOR_REG0] = MONITOR_CONFIG_VREF;
+    monitor_print_debug("[monitor-hw] set ADC reference voltage to 2.5V\n");
 
 }
 
@@ -37,8 +37,8 @@ void monitor_hw_config_vref() {
  */
 void monitor_hw_config_2vref() {
 
-    monitor_hw[PUM_REG0] = PUM_CONFIG_2VREF;     
-    pum_print_debug("[monitor-hw] set ADC reference voltage to 5V\n");   
+    monitor_hw[MONITOR_REG0] = MONITOR_CONFIG_2VREF;
+    monitor_print_debug("[monitor-hw] set ADC reference voltage to 5V\n");
 
 }
 
@@ -50,22 +50,35 @@ void monitor_hw_config_2vref() {
  */
 void monitor_hw_start() {
 
-    while((monitor_hw[PUM_REG0] & PUM_BUSY) > 0);
-    monitor_hw[PUM_REG0] = PUM_START;     
-    pum_print_debug("[monitor-hw] start to monitor power consumption and traces\n");    
+    while((monitor_hw[MONITOR_REG0] & MONITOR_BUSY) > 0);
+    monitor_hw[MONITOR_REG0] = MONITOR_START;
+    monitor_print_debug("[monitor-hw] start to monitor power consumption and traces\n");
+
+}
+
+/*
+ * Monitor clean function
+ *
+ * This function cleans the monitor memory banks.
+ *
+ */
+void monitor_hw_clean() {
+
+    monitor_hw[MONITOR_REG0] = MONITOR_STOP;
+    monitor_print_debug("[monitor-hw] clean brams\n");
 
 }
 
 /*
  * Monitor stop function
  *
- * This function cleans the monitor memory banks.
+ * This function stop the monitor acquisition. (only makes sense when power monitoring disabled)
  *
  */
 void monitor_hw_stop() {
 
-    monitor_hw[PUM_REG0] = PUM_STOP;      
-    pum_print_debug("[monitor-hw] clean brams\n");      
+    monitor_hw[MONITOR_REG0] = MONITOR_STOP;
+    monitor_print_debug("[monitor-hw] stop acquisition\n");
 
 }
 
@@ -79,8 +92,8 @@ void monitor_hw_stop() {
  */
 void monitor_hw_set_mask(int mask) {
 
-    monitor_hw[PUM_REG3] = mask;        
-    pum_print_debug("[monitor-hw] set trigger mask to %d\n", mask);    
+    monitor_hw[MONITOR_REG3] = mask;
+    monitor_print_debug("[monitor-hw] set trigger mask to %d\n", mask);
 
 }
 
@@ -94,9 +107,9 @@ void monitor_hw_set_mask(int mask) {
  */
 void monitor_hw_set_axi_mask(int mask) {
 
-    monitor_hw[PUM_REG2] = mask;        
-    monitor_hw[PUM_REG0] = PUM_AXI_SNIFFER_ENABLE_IN;   
-    pum_print_debug("[monitor-hw] set AXI trigger mask to %d\n", mask);    
+    monitor_hw[MONITOR_REG2] = mask;
+    monitor_hw[MONITOR_REG0] = MONITOR_AXI_SNIFFER_ENABLE_IN;
+    monitor_print_debug("[monitor-hw] set AXI trigger mask to %d\n", mask);
 
 }
 
@@ -110,7 +123,7 @@ void monitor_hw_set_axi_mask(int mask) {
  */
 int monitor_hw_get_time() {
 
-    return monitor_hw[PUM_REG1];
+    return monitor_hw[MONITOR_REG1];
 
 }
 
@@ -125,7 +138,7 @@ int monitor_hw_get_time() {
 int monitor_hw_get_number_power_measurements() {
 
     // +1 because the register hold the last written address (which is 0-indexed)
-    return monitor_hw[PUM_REG2] + 1;
+    return monitor_hw[MONITOR_REG2] + 1;
 
 }
 
@@ -140,7 +153,7 @@ int monitor_hw_get_number_power_measurements() {
 int monitor_hw_get_number_traces_measurements() {
 
     // +1 because the register hold the last written address (which is 0-indexed)
-    return monitor_hw[PUM_REG3] + 1;
+    return monitor_hw[MONITOR_REG3] + 1;
 
 }
 
@@ -154,7 +167,7 @@ int monitor_hw_get_number_traces_measurements() {
  */
 int monitor_hw_isdone() {
 
-    return ((monitor_hw[PUM_REG0] & PUM_DONE) > 0);
+    return ((monitor_hw[MONITOR_REG0] & MONITOR_DONE) > 0);
 
 }
 
@@ -168,7 +181,7 @@ int monitor_hw_isdone() {
  */
 int monitor_hw_isbusy() {
 
-    return ((monitor_hw[PUM_REG0] & PUM_BUSY) > 0);
+    return ((monitor_hw[MONITOR_REG0] & MONITOR_BUSY) > 0);
 
 }
 
@@ -182,6 +195,6 @@ int monitor_hw_isbusy() {
  */
 int monitor_hw_get_number_power_erros(){
 
-    return (monitor_hw[PUM_REG0] >> PUM_POWER_ERRORS_OFFSET);
-    
+    return (monitor_hw[MONITOR_REG0] >> MONITOR_POWER_ERRORS_OFFSET);
+
 }

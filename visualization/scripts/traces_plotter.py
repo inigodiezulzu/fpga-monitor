@@ -1,7 +1,7 @@
 from __future__ import division
 import matplotlib.pyplot as pyplot
 from matplotlib import gridspec
-from matplotlib.widgets import MultiCursor
+from matplotlib.widgets import MultiCursor, Cursor
 from matplotlib.backend_tools import ToolBase
 pyplot.rcParams["toolbar"] = "toolmanager"
 import os
@@ -36,11 +36,11 @@ def plot_signal(signal_number, time_adc, signal_label=None):
         x_values.append(float(timestamp))
 
         # Y value  = y_actual_value + offset
-        # offset is the space needed to place to place this signal 
+        # offset is the space needed to place to place this signal
         # on top of the previous one
-        y_values.append(int(value) + (signal_number * 2)) 
-  
-	# Y_lower_limit = offset					 
+        y_values.append(int(value) + (signal_number * 2))
+
+	# Y_lower_limit = offset
         y_values_lower_limit.append(signal_number * 2)
 
     # Ploting horizontal lines to delimit the signal space
@@ -63,64 +63,84 @@ def plot_signal(signal_number, time_adc, signal_label=None):
     	label = "Signal #" + str(signal_number)
     return label
 
-# Plotting traces 
+# Plotting traces
 def plot_traces(config_parameters):
 
     ####################### Consumption Ploter ###############################
 
-    # User indicates if dual monitorization is enabled
-    dual_monitoring_user_input = config_parameters["dual_monitor_enabled"]
-    if dual_monitoring_user_input == None:
-        dual_monitoring_user_input = raw_input("\nDual Monitorization Enabled? (y/n): ")
-    
-    # Dual monitoring indicatos
-    dual = False
+    adc_enabled = config_parameters["adc_enabled"]
 
-    if(dual_monitoring_user_input in ['y','Y',True]):
-        dual = True
-    elif(dual_monitoring_user_input in ['n','N',False]):
-        dual = False
+    if adc_enabled not in ['y','Y',True]:
+
+        # Create a window with 1 plot
+        fig = pyplot.figure(tight_layout=True)
+        fig.canvas.set_window_title("Signal Monitor")
+        gs = gridspec.GridSpec(1, 1)
+        subplot = fig.add_subplot(gs[0])
+
+        # Ask for the system sampling frequency
+        # used to convert elapsed cycles to time
+        freq_sys_mhz = config_parameters["freq_sys_mhz"]
+        if freq_sys_mhz == None:
+            freq_sys_mhz = input("Introduce the sample frequency (MHz): ")
+
+        print(freq_sys_mhz, type(freq_sys_mhz))
+
     else:
-        print("\n'{}' is wrong option. Try again.".format(dual_monitoring_user_input))
-        exit(1)
-    
-    # Execute trace parser and data ploter scripts coherent with user's selection
-    if dual:
 
-        # Create a window with 3 plots in a 1/1/2 ratio
-        fig = pyplot.figure(tight_layout=True)
-        fig.canvas.set_window_title("Signal Monitor")
-        gs = gridspec.GridSpec(3, 1, height_ratios=[1, 1, 2]) 
-        ax1 = fig.add_subplot(gs[0]) 
-        ax2 = fig.add_subplot(gs[1],sharex = ax1)
+        # User indicates if dual monitorization is enabled
+        dual_monitoring_user_input = config_parameters["dual_monitor_enabled"]
+        if dual_monitoring_user_input == None:
+            dual_monitoring_user_input = raw_input("\nDual Monitorization Enabled? (y/n): ")
 
-        # Add a subplot to the main window and set limits and x label
-        subplot = fig.add_subplot(gs[2],sharex = ax1)
+        # Dual monitoring indicatos
+        dual = False
 
-        # Plot power consumption traces
-        time_adc, freq_sys_mhz = power_module.plot_power_dual(config_parameters,ax1,ax2)
+        if(dual_monitoring_user_input in ['y','Y',True]):
+            dual = True
+        elif(dual_monitoring_user_input in ['n','N',False]):
+            dual = False
+        else:
+            print("\n'{}' is wrong option. Try again.".format(dual_monitoring_user_input))
+            exit(1)
 
-        # Remove x tickvalues from power subplot (they are already in the other)
-        pyplot.setp(ax1.get_xticklabels(), visible=False)
-        pyplot.setp(ax2.get_xticklabels(), visible=False)
+        # Execute trace parser and data ploter scripts coherent with user's selection
+        if dual:
 
-    else :
-   
-        # Create a window with 2 plots in a 3/1 ratio
-        fig = pyplot.figure(tight_layout=True)
-        fig.canvas.set_window_title("Signal Monitor")
-        gs = gridspec.GridSpec(2, 1, height_ratios=[1, 3]) 
-        ax1 = fig.add_subplot(gs[0])
+            # Create a window with 3 plots in a 1/1/2 ratio
+            fig = pyplot.figure(tight_layout=True)
+            fig.canvas.set_window_title("Signal Monitor")
+            gs = gridspec.GridSpec(3, 1, height_ratios=[1, 1, 2])
+            ax1 = fig.add_subplot(gs[0])
+            ax2 = fig.add_subplot(gs[1],sharex = ax1)
 
-        # Add a subplot to the main window and set limits and x label
-        subplot = fig.add_subplot(gs[1],sharex = ax1)
+            # Add a subplot to the main window and set limits and x label
+            subplot = fig.add_subplot(gs[2],sharex = ax1)
 
-        # Plot power consumption traces
-        time_adc, freq_sys_mhz = power_module.plot_power_mono(config_parameters,ax1)
+            # Plot power consumption traces
+            time_adc, freq_sys_mhz = power_module.plot_power_dual(config_parameters,ax1,ax2)
 
-        # Remove x tickvalues from power subplot (they are already in the other)
-        pyplot.setp(ax1.get_xticklabels(), visible=False)
-   
+            # Remove x tickvalues from power subplot (they are already in the other)
+            pyplot.setp(ax1.get_xticklabels(), visible=False)
+            pyplot.setp(ax2.get_xticklabels(), visible=False)
+
+        else :
+
+            # Create a window with 2 plots in a 3/1 ratio
+            fig = pyplot.figure(tight_layout=True)
+            fig.canvas.set_window_title("Signal Monitor")
+            gs = gridspec.GridSpec(2, 1, height_ratios=[1, 3])
+            ax1 = fig.add_subplot(gs[0])
+
+            # Add a subplot to the main window and set limits and x label
+            subplot = fig.add_subplot(gs[1],sharex = ax1)
+
+            # Plot power consumption traces
+            time_adc, freq_sys_mhz = power_module.plot_power_mono(config_parameters,ax1)
+
+            # Remove x tickvalues from power subplot (they are already in the other)
+            pyplot.setp(ax1.get_xticklabels(), visible=False)
+
 
     ########################### Traces Ploter ################################
 
@@ -156,9 +176,6 @@ def plot_traces(config_parameters):
     # y limit depends on the number of traces
     subplot.set_ylim([-0.5,(signals * 2) - 0.5])
 
-    # x limit depends on the adqusition time
-    subplot.set_xlim([0,time_adc])
-
     subplot.set_xlabel("Time (ms)", fontsize=15)
 
     # Make a temporal directory to store trace files
@@ -178,34 +195,37 @@ def plot_traces(config_parameters):
         if len(line) > 1:
             # line format "iteration (not needed), timestamp, probes"
             _,timestamp,probes = line.split(",")
-            
+
             # Time = timestamp (cycles) / sampling_frequency (Hz)
             time = float(timestamp) / (freq_sys_mhz * 1000) # freq_sys_mhz in MHz
 
             # First data is initial value, the other are events
             if cont == 1 :
-                prev_values  = int(probes)  
+                prev_values  = int(probes)
                 event_values = 0
             else :
                 event_values = int(probes)
-            
+
             # Regenerate the events
             signal_values = event_values ^ prev_values
             prev_values = signal_values
 
-            # Loop over each signal to get its correcponding bit and 
+            # Loop over each signal to get its correcponding bit and
             # write it to its temporal file
             for i in range(signals):
 
-                signal_value_bit = (signal_values & (0x1 << i)) >> i 
-                
+                signal_value_bit = (signal_values & (0x1 << i)) >> i
+
                 # writing format "cont,time,signal_value_bit\n"
                 signal_file[i].writelines(str(cont) + "," + str(time) + "," + str(signal_value_bit) + "\n")
 
                 # last iteration have and "end" flag when written
                 # (have in mind iterations starts at 0 and the last line is \n)
                 if iteration == len(lines)-2 :
-                    signal_file[i].writelines("end" + "," + str(time_adc) + "," + str(signal_value_bit) + "\n")
+                    if adc_enabled in ['y','Y',True]:
+                        signal_file[i].writelines("end" + "," + str(time_adc) + "," + str(signal_value_bit) + "\n")
+                    else:
+                        signal_file[i].writelines("end" + "," + str(time+0.2) + "," + str(signal_value_bit) + "\n")
 
             cont +=1
 
@@ -215,15 +235,24 @@ def plot_traces(config_parameters):
 
     # Plot each signal and add labels
     for i in range(signals):
-        signal_monitor_labels.append(plot_signal(i, time_adc, signals_label[i]))
+        if adc_enabled in ['y','Y',True]:
+            signal_monitor_labels.append(plot_signal(i, time_adc, signals_label[i]))
+        else:
+            signal_monitor_labels.append(plot_signal(i, time + 0.2, signals_label[i]))
         # Each signal takes two rows, so the upper one needs an empty label
-        signal_monitor_labels.append("")          
+        signal_monitor_labels.append("")
 
+    # x limit depends on the adqusition time
+    if adc_enabled in ['y','Y',True]:
+        subplot.set_xlim([0,time_adc])
+    else:
+        subplot.set_xlim([0,time+0.2])
 
     ####################### Matplot Configuration ############################
 
     # Remove x tickvalues from power subplot (they are already in the other)
-    pyplot.setp(ax1.get_xticklabels(), visible=False)
+    if adc_enabled in ['y','Y',True]:
+        pyplot.setp(ax1.get_xticklabels(), visible=False)
 
     # Each trace has two tick values, hence, the overall tickvalues are the
     # range of 2 * number of signals
@@ -232,13 +261,17 @@ def plot_traces(config_parameters):
     subplot.set_yticklabels(signal_monitor_labels,fontsize=13,verticalalignment="baseline")
 
     # Vertical cursor configuration
-        
+
     # Execute trace parser and data ploter scripts coherent with user's selection
-    if dual:
-        multi = MultiCursor(fig.canvas, (ax1,ax2,subplot), color='r', lw=1)
-        multi.visible = False
+    if adc_enabled in ['y','Y',True]:
+        if dual:
+            multi = MultiCursor(fig.canvas, (ax1,ax2,subplot), color='r', lw=1)
+            multi.visible = False
+        else:
+            multi = MultiCursor(fig.canvas, (ax1,subplot), color='r', lw=1)
+            multi.visible = False
     else:
-        multi = MultiCursor(fig.canvas, (ax1,subplot), color='r', lw=1)
+        multi = Cursor(subplot, color='r', lw=1)
         multi.visible = False
 
     class VerticalCursor(ToolBase):
@@ -246,7 +279,7 @@ def plot_traces(config_parameters):
         # keyboard shortcut
         default_keymap = 'm'
         description = 'Vertical Cursor'
-        image = os.path.join(os.getcwd(),"images/pointer_resized.png") 
+        image = os.path.join(os.getcwd(),"images/pointer_resized.png")
 
         # When the GUI button is pressed, the cursor visibility toggles
         def trigger(self, *args, **kwargs):
