@@ -21,7 +21,8 @@ MEASUREMENT_BOARD:
   ADC_REFERENCE_VOLTAGE: 5.0  # Float: 2.5 or 5.0 (vref of the adc)
   ADC_GAIN: 50.4              # Float
   ADC_RESOLUTION: 12          # Integer (ADC resolution bits)
-  SHUNT_RESISTOR: 100           # Integer (in mohm)
+  SHUNT_RESISTOR: 100         # Integer (in mohm)
+  SHUNT_RESISTOR_2: 2         # Integer (in mohm)
   VDD: 5                   # Float (supply voltage of the measured power rail)
 
 # TODO: Add axi_address_with for automatic .BIN parsing
