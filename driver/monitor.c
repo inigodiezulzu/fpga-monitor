@@ -803,13 +803,14 @@ static int monitor_probe(struct platform_device *pdev) {
     // You can do an initialization of the regs (maybe place a triggering mask)
     dev_info(&pdev->dev, "[+] ioremap()");
 
-    // Register IRQ
+    // Register IRQ (TODO: check why platform_get_resource_byname() returns NULL in kernel tag xilinx-v2023.1)
     dev_info(&pdev->dev, "[ ] request_irq()");
-    rsrc = platform_get_resource_byname(monitor_dev->pdev, IORESOURCE_IRQ, "irq");
-    dev_info(&pdev->dev, "[i] resource name  = %s", rsrc->name);
-    dev_info(&pdev->dev, "[i] resource start = %lx", rsrc->start);
-    dev_info(&pdev->dev, "[i] resource end   = %lx", rsrc->end);
-    monitor_dev->irq = rsrc->start;
+    // rsrc = platform_get_resource_byname(monitor_dev->pdev, IORESOURCE_IRQ, "irq");
+    // dev_info(&pdev->dev, "[i] resource name  = %s", rsrc->name);
+    // dev_info(&pdev->dev, "[i] resource start = %lx", rsrc->start);
+    // dev_info(&pdev->dev, "[i] resource end   = %lx", rsrc->end);
+    // monitor_dev->irq = rsrc->start;
+    monitor_dev->irq = platform_get_irq_byname(monitor_dev->pdev, "irq");  // Workaround to platform_get_resource_byname()
     res = request_irq(monitor_dev->irq, (irq_handler_t)monitor_isr, IRQF_TRIGGER_RISING, "monitor", monitor_dev);
     if (res) {
         dev_err(&pdev->dev, "[X] request_irq()");
