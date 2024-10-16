@@ -135,8 +135,6 @@ def plot_traces(config_parameters):
         if freq_sys_mhz == None:
             freq_sys_mhz = input("Introduce the sample frequency (MHz): ")
 
-        print(freq_sys_mhz, type(freq_sys_mhz))
-
     else:
 
         # User indicates if dual monitorization is enabled
@@ -210,7 +208,6 @@ def plot_traces(config_parameters):
         input_aux = list(str(raw_input("Introduce amount of signals monitored: ")).split())
     else:
         input_aux = list(str(input_aux).split())
-    print(input_aux)
 
     # Get fist user input value, is the number of signals to display
     signals = int(input_aux.pop(0))

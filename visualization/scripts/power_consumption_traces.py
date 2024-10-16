@@ -60,30 +60,29 @@ def power_data_filtering(file,enabled,order,fs,cutoff):
         data = re.findall(r'(?:\d, )(.*?)(?:\n)', data_raw)
         data = list(map(int, data))
         data_filtered = savgol_filter(data, window_length=31, polyorder=3, mode="nearest")
-        print("jeje")
-    
+
         #data_raw = open("parsed_data/" + file, "r").read()
         #data = re.findall(r'(?:\d, )(.*?)(?:\n)', data_raw)
         #data = list(map(int, data))
 
         #data_filtered = butter_lowpass_filter(data, cutoff, fs, order)
-        
+
         with open("parsed_data/" + file[:-7] + "filtered.txt", "w+") as file: # Use file to refer to the file object
 
             for element in data_filtered:
                 file.write("x,{}\n".format(element))
     else:
         copyfile("parsed_data/" + file, "parsed_data/" + file[:-7] + "filtered.txt")
-        
+
 
 def plot_power_mono(config_parameters, ax):
-    
+
     # Read power consumption parsed file
     with open("parsed_data/con.txt", "r") as f:
 
         lines = f.readlines()
 
-    # Pop last file value which contains 
+    # Pop last file value which contains
     # "total number of samples, total_number of cycles elapsed
     total_samples_consumption,total_cycles_consumption = lines.pop().split(",")
 
@@ -91,8 +90,6 @@ def plot_power_mono(config_parameters, ax):
     with open("parsed_data/con_raw.txt", "w") as f:
         f.writelines(lines)
 
-    print(total_samples_consumption, total_cycles_consumption)
-                
     # Filter power data
     power_data_filtering(\
         "con_raw.txt",\
@@ -106,13 +103,13 @@ def plot_power_mono(config_parameters, ax):
 
 
 def plot_power_dual(config_parameters, ax1,ax2):
-    
+
     # Read power consumption parsed file
     with open("parsed_data/con.txt", "r") as f:
 
         lines = f.readlines()
 
-    # Pop last file value which contains 
+    # Pop last file value which contains
     # "total number of samples, total_number of cycles elapsed
     total_samples_consumption,total_cycles_consumption = lines.pop().split(",")
 
@@ -131,8 +128,6 @@ def plot_power_dual(config_parameters, ax1,ax2):
     with open("parsed_data/con_bottom_raw.txt", "w") as f:
         f.writelines(bottom_traces)
 
-    print(total_samples_consumption, total_cycles_consumption)
-                
     # Filter power data
     power_data_filtering(\
         "con_top_raw.txt",\
@@ -172,8 +167,6 @@ def plot_power_traces(dual, config_parameters,file,ax, total_cycles_consumption,
     if freq_sys_mhz == None:
         freq_sys_mhz = input("Introduce the sample frequency (MHz): ")
 
-    print(freq_sys_mhz, type(freq_sys_mhz))
-
     cycles_per_consumption_sample = int(total_cycles_consumption) / int(total_samples_consumption)
     time_per_consumption_sample_us = cycles_per_consumption_sample / freq_sys_mhz #us
 
@@ -190,16 +183,16 @@ def plot_power_traces(dual, config_parameters,file,ax, total_cycles_consumption,
 
     vdd = float(config_parameters["vdd"])
 
-    #                              Vref * READ_VALUE  
+    #                              Vref * READ_VALUE
     # P = VDD * Ishunt = VDD * --------------------------- = CONVERSION_FACTOR * READ_VALUE
     #                           2^resolucion * K * Rshunt
-    
+
     power_conversion_factor = (vdd * adc_reference_voltage) / (2**adc_resolution * adc_gain * shunt_resistor)
 
     for line in lines:
 
         if len(line) > 1:
-            # line format "iteration (not needed), power"       
+            # line format "iteration (not needed), power"
             _, power = line.split(",")
 
             # x value = time; y value = power
@@ -210,7 +203,7 @@ def plot_power_traces(dual, config_parameters,file,ax, total_cycles_consumption,
             # Increment cycles and calculate next time value
             cycles +=1
             time_adc = cycles * time_per_consumption_sample_us / 1000 # ms
-    
+
     # Clear the plot
     ax.clear()
 

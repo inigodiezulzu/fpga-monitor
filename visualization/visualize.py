@@ -79,9 +79,6 @@ def validate_yaml(file_path):
 # Get config file
 config_parameters = validate_yaml("config/config.yaml")
 
-print(config_parameters)
-
-
 # Remove old temporal directories if exist (due to a previous runtime exception)
 try:
     shutil.rmtree(os.getcwd() + '/tmp')

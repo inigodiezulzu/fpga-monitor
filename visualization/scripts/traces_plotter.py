@@ -74,7 +74,7 @@ def plot_traces(config_parameters):
 
         # Create a window with 1 plot
         fig = pyplot.figure(tight_layout=True)
-        fig.canvas.set_window_title("Signal Monitor")
+        fig.canvas.manager.set_window_title("Signal Monitor")
         gs = gridspec.GridSpec(1, 1)
         subplot = fig.add_subplot(gs[0])
 
@@ -83,8 +83,6 @@ def plot_traces(config_parameters):
         freq_sys_mhz = config_parameters["freq_sys_mhz"]
         if freq_sys_mhz == None:
             freq_sys_mhz = input("Introduce the sample frequency (MHz): ")
-
-        print(freq_sys_mhz, type(freq_sys_mhz))
 
     else:
 
@@ -109,7 +107,7 @@ def plot_traces(config_parameters):
 
             # Create a window with 3 plots in a 1/1/2 ratio
             fig = pyplot.figure(tight_layout=True)
-            fig.canvas.set_window_title("Signal Monitor")
+            fig.canvas.manager.set_window_title("Signal Monitor")
             gs = gridspec.GridSpec(3, 1, height_ratios=[1, 1, 2])
             ax1 = fig.add_subplot(gs[0])
             ax2 = fig.add_subplot(gs[1],sharex = ax1)
@@ -128,7 +126,7 @@ def plot_traces(config_parameters):
 
             # Create a window with 2 plots in a 3/1 ratio
             fig = pyplot.figure(tight_layout=True)
-            fig.canvas.set_window_title("Signal Monitor")
+            fig.canvas.manager.set_window_title("Signal Monitor")
             gs = gridspec.GridSpec(2, 1, height_ratios=[1, 3])
             ax1 = fig.add_subplot(gs[0])
 
@@ -159,7 +157,6 @@ def plot_traces(config_parameters):
         input_aux = list(str(raw_input("Introduce amount of signals monitored: ")).split())
     else:
         input_aux = list(str(input_aux).split())
-    print(input_aux)
 
     # Get fist user input value, is the number of signals to display
     signals = int(input_aux.pop(0))
