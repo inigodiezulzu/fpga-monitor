@@ -356,14 +356,12 @@ proc artico3_hw_setup {new_project_path new_project_name artico3_ip_dir} {
     # Generate memory-mapped segments for custom peripherals (Juan)
     create_bd_addr_seg -range 1M -offset 0x7aa00000 [get_bd_addr_spaces processing_system7_0/Data] [get_bd_addr_segs {artico3_shuffler_0/s00_axi/reg0}] SEG0
     create_bd_addr_seg -range 1M -offset 0x8aa00000 [get_bd_addr_spaces processing_system7_0/Data] [get_bd_addr_segs {artico3_shuffler_0/s01_axi/reg0}] SEG1
-    create_bd_addr_seg -range 64K -offset 0x7ab00000 [get_bd_addr_spaces processing_system7_0/Data] [get_bd_addr_segs {monitor_0/s00_axi/reg0}] SEG4
-    create_bd_addr_seg -range 64K -offset 0x7ab10000 [get_bd_addr_spaces processing_system7_0/Data] [get_bd_addr_segs {monitor_cdma_0/S_AXI_LITE/Reg}] SEG5
+    create_bd_addr_seg -range 64K -offset 0x7ab00000 [get_bd_addr_spaces processing_system7_0/Data] [get_bd_addr_segs {monitor_0/s00_axi/reg0}] SEG2
+    create_bd_addr_seg -range 64K -offset 0x7ab10000 [get_bd_addr_spaces processing_system7_0/Data] [get_bd_addr_segs {monitor_cdma_0/S_AXI_LITE/Reg}] SEG3
 
-    assign_bd_address [get_bd_addr_segs {processing_system7_0/S_AXI_HP0/HP0_DDR_LOWOCM }]
-    assign_bd_address [get_bd_addr_segs {monitor_0/s01_axi/reg0 }]
-    assign_bd_address [get_bd_addr_segs {monitor_0/s02_axi/reg0 }]
-    set_property offset 0x20000000 [get_bd_addr_segs {monitor_cdma_0/Data/SEG_monitor_0_reg0}]
-    set_property offset 0x20040000 [get_bd_addr_segs {monitor_cdma_0/Data/SEG_monitor_0_reg01}]
+    create_bd_addr_seg -range 512M -offset 0x00000000 [get_bd_addr_spaces monitor_cdma_0/Data] [get_bd_addr_segs {processing_system7_0/S_AXI_HP0/HP0_DDR_LOWOCM}] SEG4
+    create_bd_addr_seg -range 256k -offset 0x20000000 [get_bd_addr_spaces monitor_cdma_0/Data] [get_bd_addr_segs {monitor_0/s01_axi/reg0}] SEG5
+    create_bd_addr_seg -range 128k -offset 0x20040000 [get_bd_addr_spaces monitor_cdma_0/Data] [get_bd_addr_segs {monitor_0/s02_axi/reg0}] SEG6
     # 0x20080000 to be 512kB aligned. In case of using AXI sniffer the data width is 128, need to be aligned with that
 
 # END
