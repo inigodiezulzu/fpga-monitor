@@ -173,9 +173,6 @@ proc artico3_hw_setup {new_project_path new_project_name artico3_ip_dir} {
     # Set Frequencies
     set_property -dict [ list CONFIG.PCW_FPGA0_PERIPHERAL_FREQMHZ {100} ] [get_bd_cells processing_system7_0]
 
-    # HP para DMA (Juan)
-    set_property -dict [list CONFIG.PCW_USE_S_AXI_HP0 {1} CONFIG.PCW_S_AXI_HP0_DATA_WIDTH {64}] [get_bd_cells processing_system7_0]
-
 # APPLICATION CONFIGURATION
 
     # Create instance of ARTICo3 infrastructure
@@ -188,8 +185,6 @@ proc artico3_hw_setup {new_project_path new_project_name artico3_ip_dir} {
 
     # Create other instances (Juan)
     # CDMA to access monitor memories
-    create_bd_cell -type ip -vlnv xilinx.com:ip:axi_cdma:4.1 monitor_cdma_0
-    set_property -dict [list CONFIG.C_M_AXI_DATA_WIDTH {64} CONFIG.C_M_AXI_MAX_BURST_LEN {256} CONFIG.C_INCLUDE_SG {0}] [get_bd_cells monitor_cdma_0]
 
 	# Create monitor
     create_bd_cell -type ip -vlnv cei.upm.es:artico3:monitor:1.0 monitor_0
@@ -241,78 +236,43 @@ proc artico3_hw_setup {new_project_path new_project_name artico3_ip_dir} {
 
     # Required to avoid problems with AXI Interconnect
     set_property -dict [list CONFIG.C_S_AXI_ID_WIDTH {12}] [get_bd_cells artico3_shuffler_0]
-
-    # Create and configure new AXI Interconnects
-    create_bd_cell -type ip -vlnv xilinx.com:ip:axi_interconnect:2.1 axi_a3ctrl
-    set_property -dict [ list CONFIG.NUM_MI {3} CONFIG.NUM_SI {1}] [get_bd_cells axi_a3ctrl]
-    create_bd_cell -type ip -vlnv xilinx.com:ip:axi_interconnect:2.1 axi_a3data
-    set_property -dict [ list CONFIG.NUM_MI {1} CONFIG.NUM_SI {1}] [get_bd_cells axi_a3data]
-    create_bd_cell -type ip -vlnv xilinx.com:ip:axi_interconnect:2.1 axi_dma_0_interconnect
-    set_property -dict [ list CONFIG.NUM_MI {3} CONFIG.NUM_SI {1}] [get_bd_cells axi_dma_0_interconnect]
+    
+    # Create and configure new smartconnect
+    create_bd_cell -type ip -vlnv xilinx.com:ip:smartconnect:1.0 axi_a3ctrl
+    set_property -dict [ list CONFIG.NUM_MI {2} CONFIG.NUM_SI {1}] [get_bd_cells axi_a3ctrl]
+    create_bd_cell -type ip -vlnv xilinx.com:ip:smartconnect:1.0 axi_a3data
+    set_property -dict [ list CONFIG.NUM_MI {3} CONFIG.NUM_SI {1}] [get_bd_cells axi_a3data]
 
     # Connect AXI interfaces
     connect_bd_intf_net -intf_net axi_a3ctrl_S00_AXI [get_bd_intf_pins axi_a3ctrl/S00_AXI] [get_bd_intf_pins processing_system7_0/M_AXI_GP0]
     connect_bd_intf_net -intf_net axi_a3ctrl_M00_AXI [get_bd_intf_pins axi_a3ctrl/M00_AXI] [get_bd_intf_pins artico3_shuffler_0/s00_axi]
     connect_bd_intf_net -intf_net axi_a3ctrl_M01_AXI [get_bd_intf_pins axi_a3ctrl/M01_AXI] [get_bd_intf_pins monitor_0/s00_axi]
-    connect_bd_intf_net -intf_net axi_a3ctrl_M02_AXI [get_bd_intf_pins axi_a3ctrl/M02_AXI] [get_bd_intf_pins monitor_cdma_0/S_AXI_LITE]
 
     connect_bd_intf_net -intf_net axi_a3data_S00_AXI [get_bd_intf_pins axi_a3data/S00_AXI] [get_bd_intf_pins processing_system7_0/M_AXI_GP1]
     connect_bd_intf_net -intf_net axi_a3data_M00_AXI [get_bd_intf_pins axi_a3data/M00_AXI] [get_bd_intf_pins artico3_shuffler_0/s01_axi]
-
-    connect_bd_intf_net -intf_net axi_dma_0_interconnect_S00_AXI [get_bd_intf_pins axi_dma_0_interconnect/S00_AXI] [get_bd_intf_pins monitor_cdma_0/M_AXI]
-    connect_bd_intf_net -intf_net axi_dma_0_interconnect_M00_AXI [get_bd_intf_pins axi_dma_0_interconnect/M00_AXI] [get_bd_intf_pins processing_system7_0/S_AXI_HP0]
-    connect_bd_intf_net -intf_net axi_dma_0_interconnect_M01_AXI [get_bd_intf_pins axi_dma_0_interconnect/M01_AXI] [get_bd_intf_pins monitor_0/s01_axi]
-    connect_bd_intf_net -intf_net axi_dma_0_interconnect_M02_AXI [get_bd_intf_pins axi_dma_0_interconnect/M02_AXI] [get_bd_intf_pins monitor_0/s02_axi]
+    connect_bd_intf_net -intf_net axi_a3data_M01_AXI [get_bd_intf_pins axi_a3data/M01_AXI] [get_bd_intf_pins monitor_0/s01_axi]
+    connect_bd_intf_net -intf_net axi_a3data_M02_AXI [get_bd_intf_pins axi_a3data/M02_AXI] [get_bd_intf_pins monitor_0/s02_axi]
 
     # Connect clocks
     connect_bd_net [get_bd_pins processing_system7_0/FCLK_CLK0] \
                         [get_bd_pins reset_0/slowest_sync_clk] \
                         [get_bd_pins processing_system7_0/M_AXI_GP0_ACLK] \
-                        [get_bd_pins axi_a3ctrl/ACLK] \
-                        [get_bd_pins axi_a3ctrl/M00_ACLK] \
-                        [get_bd_pins axi_a3ctrl/M01_ACLK] \
-                        [get_bd_pins axi_a3ctrl/M02_ACLK] \
-                        [get_bd_pins axi_a3ctrl/S00_ACLK] \
+                        [get_bd_pins axi_a3ctrl/aclk] \
                         [get_bd_pins processing_system7_0/M_AXI_GP1_ACLK] \
-	                    [get_bd_pins axi_a3data/ACLK] \
-	                    [get_bd_pins axi_a3data/M00_ACLK] \
-	                    [get_bd_pins axi_a3data/S00_ACLK] \
-                        [get_bd_pins processing_system7_0/S_AXI_HP0_ACLK] \
-	                    [get_bd_pins axi_dma_0_interconnect/ACLK] \
-	                    [get_bd_pins axi_dma_0_interconnect/M00_ACLK] \
-	                    [get_bd_pins axi_dma_0_interconnect/M01_ACLK] \
-	                    [get_bd_pins axi_dma_0_interconnect/M02_ACLK] \
-	                    [get_bd_pins axi_dma_0_interconnect/S00_ACLK] \
+	                    [get_bd_pins axi_a3data/aclk] \
                         [get_bd_pins artico3_shuffler_0/s_axi_aclk] \
                         [get_bd_pins monitor_0/s00_axi_aclk]\
                         [get_bd_pins monitor_0/s01_axi_aclk]\
                         [get_bd_pins monitor_0/s02_axi_aclk]\
                         [get_bd_pins monitor_0/s_sniffer_in_axi_aclk]\
-                        [get_bd_pins monitor_0/m_sniffer_out_axi_aclk]\
-                        [get_bd_pins monitor_cdma_0/m_axi_aclk]\
-                        [get_bd_pins monitor_cdma_0/s_axi_lite_aclk]
+                        [get_bd_pins monitor_0/m_sniffer_out_axi_aclk]
 
     # Connect resets
     connect_bd_net [get_bd_pins reset_0/ext_reset_in] [get_bd_pins processing_system7_0/FCLK_RESET0_N]
 
     connect_bd_net [get_bd_pins reset_0/Interconnect_aresetn] \
-                        [get_bd_pins axi_a3ctrl/ARESETN] \
-                        [get_bd_pins axi_a3ctrl/M00_ARESETN] \
-                        [get_bd_pins axi_a3ctrl/M01_ARESETN] \
-                        [get_bd_pins axi_a3ctrl/M02_ARESETN] \
-                        [get_bd_pins axi_a3ctrl/M03_ARESETN] \
-                        [get_bd_pins axi_a3ctrl/S00_ARESETN] \
-                        [get_bd_pins axi_a3data/ARESETN] \
-                        [get_bd_pins axi_a3data/M00_ARESETN] \
-                        [get_bd_pins axi_a3data/M01_ARESETN] \
-                        [get_bd_pins axi_a3data/M02_ARESETN] \
-                        [get_bd_pins axi_a3data/M03_ARESETN] \
-                        [get_bd_pins axi_a3data/S00_ARESETN] \
-                        [get_bd_pins axi_dma_0_interconnect/ARESETN] \
-                        [get_bd_pins axi_dma_0_interconnect/M00_ARESETN] \
-                        [get_bd_pins axi_dma_0_interconnect/M01_ARESETN] \
-                        [get_bd_pins axi_dma_0_interconnect/M02_ARESETN] \
-                        [get_bd_pins axi_dma_0_interconnect/S00_ARESETN]
+                        [get_bd_pins axi_a3ctrl/aresetn] \
+                        [get_bd_pins axi_a3data/aresetn]
 
     connect_bd_net [get_bd_pins reset_0/peripheral_aresetn] \
                         [get_bd_pins artico3_shuffler_0/s_axi_aresetn] \
@@ -320,17 +280,15 @@ proc artico3_hw_setup {new_project_path new_project_name artico3_ip_dir} {
                         [get_bd_pins monitor_0/s01_axi_aresetn] \
                         [get_bd_pins monitor_0/s02_axi_aresetn] \
                         [get_bd_pins monitor_0/s_sniffer_in_axi_aresetn]\
-                        [get_bd_pins monitor_0/m_sniffer_out_axi_aresetn]\
-                        [get_bd_pins monitor_cdma_0/s_axi_lite_aresetn]
+                        [get_bd_pins monitor_0/m_sniffer_out_axi_aresetn]
 
 
     # Connect interrupts
     create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat:2.1 xlconcat_0
-    set_property -dict [list CONFIG.NUM_PORTS {3}] [get_bd_cells xlconcat_0]
+    set_property -dict [list CONFIG.NUM_PORTS {2}] [get_bd_cells xlconcat_0]
 
     connect_bd_net [get_bd_pins artico3_shuffler_0/interrupt] [get_bd_pins xlconcat_0/In0]
     connect_bd_net [get_bd_pins monitor_0/interrupt] [get_bd_pins xlconcat_0/In1]
-    connect_bd_net [get_bd_pins monitor_cdma_0/cdma_introut] [get_bd_pins xlconcat_0/In2]
     connect_bd_net [get_bd_pins xlconcat_0/dout] [get_bd_pins processing_system7_0/IRQ_F2P]
 
     # Connect ARTICo3 slots
@@ -357,11 +315,8 @@ proc artico3_hw_setup {new_project_path new_project_name artico3_ip_dir} {
     create_bd_addr_seg -range 1M -offset 0x7aa00000 [get_bd_addr_spaces processing_system7_0/Data] [get_bd_addr_segs {artico3_shuffler_0/s00_axi/reg0}] SEG0
     create_bd_addr_seg -range 1M -offset 0x8aa00000 [get_bd_addr_spaces processing_system7_0/Data] [get_bd_addr_segs {artico3_shuffler_0/s01_axi/reg0}] SEG1
     create_bd_addr_seg -range 64K -offset 0x7ab00000 [get_bd_addr_spaces processing_system7_0/Data] [get_bd_addr_segs {monitor_0/s00_axi/reg0}] SEG2
-    create_bd_addr_seg -range 64K -offset 0x7ab10000 [get_bd_addr_spaces processing_system7_0/Data] [get_bd_addr_segs {monitor_cdma_0/S_AXI_LITE/Reg}] SEG3
-
-    create_bd_addr_seg -range 512M -offset 0x00000000 [get_bd_addr_spaces monitor_cdma_0/Data] [get_bd_addr_segs {processing_system7_0/S_AXI_HP0/HP0_DDR_LOWOCM}] SEG4
-    create_bd_addr_seg -range 256k -offset 0x20000000 [get_bd_addr_spaces monitor_cdma_0/Data] [get_bd_addr_segs {monitor_0/s01_axi/reg0}] SEG5
-    create_bd_addr_seg -range 128k -offset 0x20040000 [get_bd_addr_spaces monitor_cdma_0/Data] [get_bd_addr_segs {monitor_0/s02_axi/reg0}] SEG6
+    create_bd_addr_seg -range 256k -offset 0xb0100000 [get_bd_addr_spaces processing_system7_0/Data] [get_bd_addr_segs {monitor_0/s01_axi/reg0}] SEG3
+    create_bd_addr_seg -range 128k -offset 0xb0180000 [get_bd_addr_spaces processing_system7_0/Data] [get_bd_addr_segs {monitor_0/s02_axi/reg0}] SEG4
     # 0x20080000 to be 512kB aligned. In case of using AXI sniffer the data width is 128, need to be aligned with that
 
 # END

@@ -14,16 +14,8 @@
 
 extern uint32_t *monitor_hw;
 
-#if ZYNQMP
-// Zynq-7000 devices
 #define MONITOR_POWER_ADDR  (0xb0100000)
 #define MONITOR_TRACES_ADDR (0xb0180000)
-#else
-// Zynq Ultrascale+ devices
-#define MONITOR_POWER_ADDR  (0x20000000)
-#define MONITOR_TRACES_ADDR (0x20040000)
-
-#endif
 
 /*
  * Monitor infrastructure register offsets (in 32-bit words)
