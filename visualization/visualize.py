@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
 import os
+import sys
+import argparse
 import shutil
 import scripts.power_consumption_traces as power
 import scripts.performance_traces as performance
@@ -76,6 +78,13 @@ def validate_yaml(file_path):
 
         return config_parameters
 
+# Parse arguments
+parser = argparse.ArgumentParser()
+
+# Indicate the path to the folder containing the traces.
+parser.add_argument('-i', dest="traces_path", help='<Required> Path to the folder containing the traces', required=True)
+args = parser.parse_args(sys.argv[1:])
+
 # Get config file
 config_parameters = validate_yaml("config/config.yaml")
 
@@ -91,7 +100,7 @@ except:
 
 # Parse power consumption binary file
 if config_parameters["adc_enabled"] in ['y','Y',True]:
-    power.parse_file()
+    power.parse_file(args.traces_path)
 
 # User indicates if Bus Monitorization capabilities are enabled
 bus_monitoring_user_input = config_parameters["axi_bus_enabled"]
@@ -100,10 +109,10 @@ if bus_monitoring_user_input == None:
 
 # Execute trace parser and data ploter scripts coherent with user's selection
 if(bus_monitoring_user_input in ['y','Y',True]):
-    performance_axi.parse_file()
+    performance_axi.parse_file(args.traces_path)
     traces_plotter_axi.plot_traces(config_parameters)
 elif(bus_monitoring_user_input in ['n','N',False]):
-    performance.parse_file()
+    performance.parse_file(args.traces_path)
     traces_plotter.plot_traces(config_parameters)
 else:
     print("\n'{}' is wrong option. Try again.".format(bus_monitoring_user_input))

@@ -2,7 +2,7 @@ import struct
 import os
 
 # Parse axi performance traces file
-def parse_file():
+def parse_file(traces_path):
 
     i = 0
 
@@ -16,7 +16,7 @@ def parse_file():
     performance_store_file = open("parsed_data/sig.txt", "w+")
 
     # Open traces binary file in binary mode
-    with open("../SIG.BIN", "rb") as performance_binary_file:
+    with open(f"{traces_path}/SIG.BIN", "rb") as performance_binary_file:
 
         # Each trace has four 4-bytes data (timestamp, empty, axi, probes)
         timestamp = performance_binary_file.read(4)

@@ -8,7 +8,7 @@ import re
 from shutil import copyfile
 
 # Parse power consumption binary file
-def parse_file():
+def parse_file(traces_path):
 
     i = 0
 
@@ -19,7 +19,7 @@ def parse_file():
     power_store_file = open("parsed_data/con.txt", "w+")
 
     # Open power binary file in binary mode
-    with open("../CON.BIN", "rb") as power_binary_file:
+    with open(f"{traces_path}/CON.BIN", "rb") as power_binary_file:
 
         # Each power data has one 4-bytes data (power)
         power = power_binary_file.read(4)
