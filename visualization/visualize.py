@@ -29,6 +29,7 @@ def validate_yaml(file_path):
         config_parameters["number_signals"]         = config_yaml['TOOL']['OPTIONAL_PARAMETERS']['NUMBER_SIGNALS']
         config_parameters["number_axi_events"]      = config_yaml['TOOL']['OPTIONAL_PARAMETERS']['NUMBER_AXI_EVENTS']
         config_parameters["adc_enabled"]            = config_yaml['MEASUREMENT_BOARD']['ADC_ENABLED']
+        config_parameters["adc_measurement_board"]  = config_yaml['MEASUREMENT_BOARD']['ADC_MEASUREMENT_BOARD']
         config_parameters["adc_reference_voltage"]  = config_yaml['MEASUREMENT_BOARD']['ADC_REFERENCE_VOLTAGE']
         config_parameters["adc_gain"]               = config_yaml['MEASUREMENT_BOARD']['ADC_GAIN']
         config_parameters["adc_resolution"]         = config_yaml['MEASUREMENT_BOARD']['ADC_RESOLUTION']
@@ -54,6 +55,10 @@ def validate_yaml(file_path):
 
         if config_parameters["adc_enabled"] is None:
             print("Config file error: [MEASUREMENT_BOARD > ADC_ENABLED]")
+            exit(0)
+
+        if config_parameters["adc_measurement_board"] is None:
+            print("Config file error: [MEASUREMENT_BOARD > ADC_MEASUREMENT_BOARD]")
             exit(0)
 
         if config_parameters["adc_reference_voltage"] is None:

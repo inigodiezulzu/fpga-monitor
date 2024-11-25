@@ -98,7 +98,13 @@ def plot_power_mono(config_parameters, ax):
         int(config_parameters["filter_fs"]),\
         int(config_parameters["filter_cutoff"]))
 
-    return plot_power_traces(False, config_parameters,"con_filtered.txt",ax,total_cycles_consumption,total_samples_consumption,rshunt_index=0)
+    # Plot Power Traces (if adc_measurement_board is True, rshunt_index=0)
+    if config_parameters["adc_measurement_board"] == "CEI":
+        return plot_power_traces(False, config_parameters,"con_filtered.txt",ax,total_cycles_consumption,total_samples_consumption,rshunt_index=0)
+    elif config_parameters["adc_measurement_board"] == "MDC":
+        return plot_power_traces(False, config_parameters,"con_filtered.txt",ax,total_cycles_consumption,total_samples_consumption,rshunt_index=None)
+    else:
+        raise ValueError("adc_measurement_board not implemented")
 
 
 
@@ -173,21 +179,25 @@ def plot_power_traces(dual, config_parameters,file,ax, total_cycles_consumption,
     time_adc = 0.0
 
     # Power conversion formula
-    adc_reference_voltage = float(config_parameters["adc_reference_voltage"])
-    adc_gain = float(config_parameters["adc_gain"])
-    adc_resolution = int(config_parameters["adc_resolution"])
-    if rshunt_index == 0:
-        shunt_resistor = float(config_parameters["shunt_resistor"] / 1000) # convert from mOhm to Ohm
+    if rshunt_index == None:
+        # TODO: implement this case
+        power_conversion_factor = 1 / 1000
     else:
-        shunt_resistor = float(config_parameters["shunt_resistor_2"] / 1000) # convert from mOhm to Ohm
+        adc_reference_voltage = float(config_parameters["adc_reference_voltage"])
+        adc_gain = float(config_parameters["adc_gain"])
+        adc_resolution = int(config_parameters["adc_resolution"])
+        if rshunt_index == 0:
+            shunt_resistor = float(config_parameters["shunt_resistor"] / 1000) # convert from mOhm to Ohm
+        else:
+            shunt_resistor = float(config_parameters["shunt_resistor_2"] / 1000) # convert from mOhm to Ohm
 
-    vdd = float(config_parameters["vdd"])
+        vdd = float(config_parameters["vdd"])
 
-    #                              Vref * READ_VALUE
-    # P = VDD * Ishunt = VDD * --------------------------- = CONVERSION_FACTOR * READ_VALUE
-    #                           2^resolucion * K * Rshunt
+        #                              Vref * READ_VALUE
+        # P = VDD * Ishunt = VDD * --------------------------- = CONVERSION_FACTOR * READ_VALUE
+        #                           2^resolucion * K * Rshunt
 
-    power_conversion_factor = (vdd * adc_reference_voltage) / (2**adc_resolution * adc_gain * shunt_resistor)
+        power_conversion_factor = (vdd * adc_reference_voltage) / (2**adc_resolution * adc_gain * shunt_resistor)
 
     for line in lines:
 
@@ -203,6 +213,10 @@ def plot_power_traces(dual, config_parameters,file,ax, total_cycles_consumption,
             # Increment cycles and calculate next time value
             cycles +=1
             time_adc = cycles * time_per_consumption_sample_us / 1000 # ms
+
+    # Set last time value, since the last cycle should not be taken into account
+    time_adc = (cycles - 1) * time_per_consumption_sample_us / 1000 # ms
+
 
     # Clear the plot
     ax.clear()
