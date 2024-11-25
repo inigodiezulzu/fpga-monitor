@@ -99,10 +99,12 @@ def plot_power_mono(config_parameters, ax):
         int(config_parameters["filter_cutoff"]))
 
     # Plot Power Traces (if adc_measurement_board is True, rshunt_index=0)
-    if config_parameters["adc_measurement_board"] is True:
+    if config_parameters["adc_measurement_board"] == "CEI":
         return plot_power_traces(False, config_parameters,"con_filtered.txt",ax,total_cycles_consumption,total_samples_consumption,rshunt_index=0)
-    else:
+    elif config_parameters["adc_measurement_board"] == "MDC":
         return plot_power_traces(False, config_parameters,"con_filtered.txt",ax,total_cycles_consumption,total_samples_consumption,rshunt_index=None)
+    else:
+        raise ValueError("adc_measurement_board not implemented")
 
 
 
@@ -179,7 +181,7 @@ def plot_power_traces(dual, config_parameters,file,ax, total_cycles_consumption,
     # Power conversion formula
     if rshunt_index == None:
         # TODO: implement this case
-        raise NotImplementedError
+        power_conversion_factor = 1 / 1000
     else:
         adc_reference_voltage = float(config_parameters["adc_reference_voltage"])
         adc_gain = float(config_parameters["adc_gain"])
@@ -211,6 +213,10 @@ def plot_power_traces(dual, config_parameters,file,ax, total_cycles_consumption,
             # Increment cycles and calculate next time value
             cycles +=1
             time_adc = cycles * time_per_consumption_sample_us / 1000 # ms
+
+    # Set last time value, since the last cycle should not be taken into account
+    time_adc = (cycles - 1) * time_per_consumption_sample_us / 1000 # ms
+
 
     # Clear the plot
     ax.clear()
