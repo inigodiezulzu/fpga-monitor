@@ -10,7 +10,7 @@
                 reg = <0x0 0xa0100000 0x0 0x10000 0x0 0xb0100000 0x0 0x80000 0x0 0xb0180000 0x0 0x20000>;
                 reg-names = "ctrl", "power", "traces";
                 interrupt-parent = <&gic>;
-                interrupts = <0 90 1>;
+                interrupts = <0 89 1>;
                 interrupt-names = "irq";
                 dmas = <&fpd_dma_chan2 0>;
                 dma-names = "ps-dma-mon";
