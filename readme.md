@@ -5,6 +5,7 @@ This repository contains a lightweight Monitor infrastructure to acquire synchro
 ## Repository Structure
 
 - `ip-core/`: Monitor hardware IP, which can be imported into a block design in Vivado.
+- `constraints/`: Board constraint for the Monitor IP.
 - `linux/`: Linux driver to interact with the hardware of the Monitor on a Linux-based system. For detailed information, refer to its [Readme](linux/drivers/monitor/readme.md).
 - `device-tree/`: Device tree overlay to register the Monitor on a Linux-based system.
 - `lib/`: Software user-space library to configure and manage the Monitor.
