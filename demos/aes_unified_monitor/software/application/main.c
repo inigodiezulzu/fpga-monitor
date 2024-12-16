@@ -62,7 +62,7 @@ int main()
 	// Start monitor
 	unified_monitor_start();
 
-	for (int aux_i = 0; aux_i < 50; aux_i++)
+	for (int aux_i = 0; aux_i < 500000; aux_i++)
 	{
 		/* text data FFEEDDCCBBAA99887766554433221100 */
 		unsigned int j = 0x00000000;
