@@ -260,7 +260,7 @@ int main(int argc, char *argv[]) {
     close(fd_traces);
 
     monitor_err:
-    monitor_stop();
+    monitor_clean();
 
     // Free data buffers
     artico3_free("matmul", "a");
