@@ -39,6 +39,7 @@
 #include <linux/of_irq.h>
 #include <linux/ioport.h>
 #include <linux/completion.h>
+#include <linux/version.h>
 
 #include "monitor.h"
 #define DRIVER_NAME "monitor"
@@ -704,7 +705,12 @@ static int monitor_cdev_init(void) {
 
     // create sysfs class
     pr_info("[%s] [ ] class_create()\n", DRIVER_NAME);
+    // class_create has been modified after Linux 6.4 (https://community.intel.com/t5/Analyzers/redhat9-5-14-0-kernal-header-changes-break-sepdk-build/m-p/1605740)
+    #if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 4, 0)
+    monitor_class = class_create(DRIVER_NAME);
+    #else
     monitor_class = class_create(THIS_MODULE, DRIVER_NAME);
+    #endif
 
     if (IS_ERR(monitor_class)) {
         pr_err("[%s] [X] class_create()\n", DRIVER_NAME);
