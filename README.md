@@ -2,7 +2,9 @@
 
 This repository contains the implementation of a modular and composable framework for power and performance monitoring in heterogeneous FPGA-based systems.
 
-<img style="float : center;" src="img/monitor_framework.png" width="300">
+<p align="center">
+<img style="text-align: center;" src="img/monitor_framework.png" width="300">
+</p>
 
 ## Overview
 
