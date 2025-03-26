@@ -35,15 +35,16 @@ Modern FPGA systems, especially in heterogeneous cloud-edge deployments, demand 
 - `artico3_integration/`: Set of files and scripts to integrate the Monitor infrastructure into the [ARTICo3 framework](https://github.com/des-cei/artico3.git). For detailed information, refer to its [Readme](artico3_integration/readme.md).
 - `demos/dummy/`: Tutorial showing a Linux application using the Monitor IP. For detailed information, refer to its [Readme](demos/dummy/readme.md).
 
-## Supported Platforms (Tested)
+## Supported Platforms Tested (Independent Choices)
 
-| Platform        | OS            | Power Source       | Performance Source     | Acceleration |
-|----------------|---------------|--------------------|-------------------------|--------------|
-| Pynq-Z1         | Yocto-Linux   | External board     | Internal HW signals    | ARTICo³      |
-| Kria KV260 SoM  | Custom Linux  | On-chip ADCs       | AXI bus                | MDC          |
-| Alveo U250      | Petalinux     | Platform-specific  |                        | AMD Vitis    |
-| ZCU102          | Bare-metal    |                    |                        |              |
-| Genesys 2       |               |                    |                        |              |
+| **Category**           | **Options**                                                                                           |
+|------------------------|-------------------------------------------------------------------------------------------------------|
+| **Platform**           | Pynq-Z1, Kria KV260 SoM, Alveo U250, ZCU102, Genesys 2                                                |
+| **OS**                 | Yocto-Linux, Custom Linux, Petalinux, Bare-metal                                                      |
+| **Power Source**       | External measurement board, On-chip ADCs, Platform-specific solutions (e.g., AMD CMS)                 |
+| **Performance Source** | Internal HW signals (e.g., start/stop), AXI bus (e.g., AXI handshakes)                                |
+| **Control**            | Processing system (e.g., ARM hard-core), Programmable logic (e.g., RISC-V soft-core)                  |
+| **Acceleration**       | [ARTICo³](https://github.com/des-cei/artico3.git), [MDC](https://github.com/mdc-suite/mdc), AMD Vitis |
 
 These platforms have been thoroughly tested with the framework. However, the framework is not limited to these platforms and can be used with other FPGA-based systems as well.
 
