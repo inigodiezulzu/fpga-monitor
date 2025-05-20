@@ -1,7 +1,8 @@
-diff -ruN tools_original/_pypack/artico3/scripts/os/gen_driver.py tools_monitor/_pypack/artico3/scripts/os/gen_driver.py
---- tools_original/_pypack/artico3/scripts/os/gen_driver.py	2024-09-12 16:02:31.918619000 +0200
-+++ tools_monitor/_pypack/artico3/scripts/os/gen_driver.py	2024-09-11 12:32:06.905890000 +0200
-@@ -50,21 +50,25 @@
+diff --git a/tools/_pypack/artico3/scripts/os/gen_driver.py b/tools/_pypack/artico3/scripts/os/gen_driver.py
+index 59ce771..b1f0ff6 100644
+--- a/tools/_pypack/artico3/scripts/os/gen_driver.py
++++ b/tools/_pypack/artico3/scripts/os/gen_driver.py
+@@ -50,21 +50,25 @@ def gen_driver(args, kdir, outdir, link, cross):
          log.error("Linux kernel source path must be specified")
          return
      outdir = outdir if outdir is not None else prj.basedir + ".os"
@@ -26,14 +27,14 @@ diff -ruN tools_original/_pypack/artico3/scripts/os/gen_driver.py tools_monitor/
  
      if cross == "":
          if "xczu" in prj.impl.part:
--            cc = "/opt/Xilinx/SDK/{0}/gnu/aarch64/lin/aarch64-linux/bin/aarch64-linux-gnu-".format(prj.impl.xil[1])
-+           cc = "/opt/Xilinx/SDK/{0}/gnu/aarch64/lin/aarch64-linux/bin/aarch64-linux-gnu-".format(prj.impl.xil[1])
+-            cc = "/tools/Xilinx/Vitis/{0}/gnu/aarch64/lin/aarch64-linux/bin/aarch64-linux-gnu-".format(prj.impl.xil[1])
++            cc = "/opt/Xilinx/SDK/{0}/gnu/aarch64/lin/aarch64-linux/bin/aarch64-linux-gnu-".format(prj.impl.xil[1])
 +            #cc = "/opt/Xilinx/Vitis/2020.2/gnu/aarch64/lin/aarch64-linux/bin/aarch64-linux-gnu-"
 +            #cc = "/media/juan/HDD/tools/Vitis/2021.2/gnu/aarch64/lin/aarch64-linux/bin/aarch64-linux-gnu-"
          else:
              #~ cc = "/opt/Xilinx/SDK/{0}/gnu/arm/lin/bin/arm-xilinx-linux-gnueabi-".format(prj.impl.xil[1])
-             cc = "/opt/Xilinx/SDK/{0}/gnu/aarch32/lin/gcc-arm-linux-gnueabi/bin/arm-linux-gnueabihf-".format(prj.impl.xil[1])
-@@ -76,8 +80,15 @@
+             cc = "/tools/Xilinx/Vitis/{0}/gnu/aarch32/lin/gcc-arm-linux-gnueabi/bin/arm-linux-gnueabihf-".format(prj.impl.xil[1])
+@@ -76,8 +80,15 @@ def gen_driver(args, kdir, outdir, link, cross):
      else:
          arch = "arm"
  
@@ -50,10 +51,11 @@ diff -ruN tools_original/_pypack/artico3/scripts/os/gen_driver.py tools_monitor/
      subprocess.run("""
          bash -c "export CROSS_COMPILE={0} &&
          export ARCH={1} &&
-diff -ruN tools_original/_pypack/artico3/scripts/os/gen_overlay.py tools_monitor/_pypack/artico3/scripts/os/gen_overlay.py
---- tools_original/_pypack/artico3/scripts/os/gen_overlay.py	2024-09-12 16:02:31.918619000 +0200
-+++ tools_monitor/_pypack/artico3/scripts/os/gen_overlay.py	2024-09-11 12:32:23.897838000 +0200
-@@ -49,23 +49,32 @@
+diff --git a/tools/_pypack/artico3/scripts/os/gen_overlay.py b/tools/_pypack/artico3/scripts/os/gen_overlay.py
+index 611c68d..7d19e03 100644
+--- a/tools/_pypack/artico3/scripts/os/gen_overlay.py
++++ b/tools/_pypack/artico3/scripts/os/gen_overlay.py
+@@ -49,23 +49,32 @@ def gen_overlay(args, dtcdir, outdir, link):
          log.error("Device Tree Compiler must be specified")
          return
      outdir = outdir if outdir is not None else prj.basedir + ".os"
@@ -77,7 +79,7 @@ diff -ruN tools_original/_pypack/artico3/scripts/os/gen_overlay.py tools_monitor
 -    log.info("Building device tree overlay...")
 -    shutil2.chdir(outdir)
 +    log.info("Building device tree overlays...")
-+
++    
 +    shutil2.chdir(outdir1)
      subprocess.run("""
          bash -c "{0}/dtc -I dts -O dtb -@ -o artico3.dtbo artico3.dts"
@@ -89,13 +91,14 @@ diff -ruN tools_original/_pypack/artico3/scripts/os/gen_overlay.py tools_monitor
 +        bash -c "{0}/dtc -I dts -O dtb -@ -o monitor.dtbo monitor.dts"
 +        bash -c "{0}/dtc -I dts -O dts -@ -o monitor.dtso monitor.dts"
 +        """.format(dtcdir), shell=True, check=True)
-+
++    
      print()
      shutil2.chdir(prj.dir)
-diff -ruN tools_original/_pypack/artico3/scripts/sw/export.py tools_monitor/_pypack/artico3/scripts/sw/export.py
---- tools_original/_pypack/artico3/scripts/sw/export.py	2024-09-12 16:02:31.918619000 +0200
-+++ tools_monitor/_pypack/artico3/scripts/sw/export.py	2024-09-11 12:32:47.625766000 +0200
-@@ -35,6 +35,7 @@
+diff --git a/tools/_pypack/artico3/scripts/sw/export.py b/tools/_pypack/artico3/scripts/sw/export.py
+index c6fd244..a882343 100644
+--- a/tools/_pypack/artico3/scripts/sw/export.py
++++ b/tools/_pypack/artico3/scripts/sw/export.py
+@@ -35,6 +35,7 @@ def get_parser(prj):
          Exports the software project and generates all necessary files.
          """)
      parser.add_argument("-l", "--link", help="link sources instead of copying", default=False, action="store_true")
@@ -103,7 +106,7 @@ diff -ruN tools_original/_pypack/artico3/scripts/sw/export.py tools_monitor/_pyp
      parser.add_argument("swdir", help="alternative export directory", nargs="?")
      return parser
  
-@@ -60,12 +61,12 @@
+@@ -60,12 +61,12 @@ def export_sw(args, swdir, link):
      dictionary["SOURCES"] = [srcs]
  
      log.info("Generating export files ...")
@@ -118,10 +121,11 @@ diff -ruN tools_original/_pypack/artico3/scripts/sw/export.py tools_monitor/_pyp
 +                           for _ in shutil2.listfiles(swdir, True, "c[p]*$") if all(x not in _ for x in ["artico3","monitor"])]
  
      template.preproc(shutil2.join(swdir, "Makefile"), dictionary, "overwrite", force=True)
-diff -ruN tools_original/_pypack/artico3/utils/shutil2.py tools_monitor/_pypack/artico3/utils/shutil2.py
---- tools_original/_pypack/artico3/utils/shutil2.py	2024-09-12 16:02:31.918619000 +0200
-+++ tools_monitor/_pypack/artico3/utils/shutil2.py	2024-09-06 16:35:56.512454000 +0200
-@@ -69,6 +69,10 @@
+diff --git a/tools/_pypack/artico3/utils/shutil2.py b/tools/_pypack/artico3/utils/shutil2.py
+index 0e9ed51..45a4839 100644
+--- a/tools/_pypack/artico3/utils/shutil2.py
++++ b/tools/_pypack/artico3/utils/shutil2.py
+@@ -69,6 +69,10 @@ def mkdir(path):
      if not os.path.isdir(path):
          os.mkdir(path)
  

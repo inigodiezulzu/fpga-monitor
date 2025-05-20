@@ -10,8 +10,8 @@
 #               templates, libraries, drivers and device-tree files
 
 # Variables
-ARTICO3_REPO_URL="https://github.com/des-cei/artico3"       # ARTICo3 repository URL
-COMMIT_HASH=67c0606dc841229a00423a60cb9d9cafc0098d1d        # ARTICo3 daemon commit hash
+ARTICO3_REPO_URL="https://github.com/inigodiezulzu/artico3" # ARTICo3 repository URL
+COMMIT_HASH=276aa2382994cc08c6dd06d3bd6156ae760813b0        # ARTICo3 daemon commit hash
 ARTICO3_DIR="artico3"                                       # ARTICo3 directory
 MONITOR_PROJECT_DIR=$(pwd)                                  # Monitor project directory
 INTEGRATION_DIR="files_to_integrate"                        # Integration directory
