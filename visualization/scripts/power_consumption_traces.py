@@ -181,7 +181,7 @@ def plot_power_traces(dual, config_parameters,file,ax, total_cycles_consumption,
     # Power conversion formula
     if rshunt_index == None:
         # TODO: implement this case
-        power_conversion_factor = 1 / 1000
+        power_conversion_factor = 1 / 1000000
     else:
         adc_reference_voltage = float(config_parameters["adc_reference_voltage"])
         adc_gain = float(config_parameters["adc_gain"])

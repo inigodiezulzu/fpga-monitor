@@ -17,12 +17,13 @@ CC = $(CROSS_COMPILE)gcc
 AR = $(CROSS_COMPILE)ar
 
 CFLAGS = -Wall -Wextra -O3 -fpic -I ../../linux
-LDFLAGS = -Wl,-R,. -shared 
+LDFLAGS = -Wl,-R,. -shared -lpthread
 
 OBJS = monitor_hw.o monitor.o
 
 ZYNQ_OBJS = $(OBJS:%=aarch32/_build/%)
 ZYNQMP_OBJS = $(OBJS:%=aarch64/_build/%)
+AU250_OBJS = $(OBJS_AU250:%=x86/_build/%)
 
 MKDIRP = mkdir -p
 CPF = cp -f
@@ -41,9 +42,16 @@ zynqmp: $(ZYNQMP_OBJS)
 	$(MKDIRP) aarch64/include
 	$(CPF) monitor.h aarch64/include
 
+.PHONY: xcu250
+xcu250: $(ZYNQMP_OBJS)
+	$(CC) $(LDFLAGS) $^ $(LDLIBS) -o x86/monitor.so
+	$(AR) rcs x86/libmonitor.a $^
+	$(MKDIRP) x86/include
+	$(CPF) monitor.h x86/include
+
 .PHONY: clean
 clean:
-	rm -rf aarch32 aarch64
+	rm -rf aarch32 aarch64 x86
 
 aarch32/_build/%.o: %.c
 	$(MKDIRP) $(@D)
@@ -52,3 +60,7 @@ aarch32/_build/%.o: %.c
 aarch64/_build/%.o: %.c
 	$(MKDIRP) $(@D)
 	$(CC) -DZYNQMP $(CFLAGS) -c $< -o $@
+
+x86/_build/%.o: %.c
+	$(MKDIRP) $(@D)
+	$(CC) -DAU250 $(CFLAGS) -c $< -o $@
