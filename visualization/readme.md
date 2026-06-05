@@ -4,9 +4,18 @@ This tool provides a comprehensive way to visualize power consumption and perfor
 
 ## Prerequisites
 
-Ensure you have the required Python packages installed. You can install them using the following command:
+Install system packages (virtualenv and PyQt6) and create a Python virtual environment with `virtualenv`:
 
 ```sh
+sudo apt-get update
+sudo apt-get install -y virtualenv python3-pyqt6
+```
+
+Create and activate a virtual environment, then install the Python requirements:
+
+```sh
+virtualenv env
+source env/bin/activate
 pip install -r requirements.txt
 ```
 
