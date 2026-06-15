@@ -284,8 +284,8 @@ proc artico3_build_bitstream {} {
     #Generate first-order partial bitstreams 
     puts "#HD: Generating first-order partial bitstreams "
     open_checkpoint A1/top_A1_recombined.dcp
-    write_bitstream -force -bin_file -cell floorplan_static_i/reconfig_base_inst_0/U0 ./$firstRP1/top_A1_artico3_recombined_partial.bit
-    file rename -force "./$firstRP1/top_A1_artico3_recombined_partial.bit" "./$firstRP1bit/top_A1_artico3_recombined_partial.bit"
+    write_bitstream -force -cell floorplan_static_i/reconfig_base_inst_0/U0 ./$firstRP1bit/top_A1_artico3_recombined_partial.bit
+    write_cfgmem -force -disablebitswap -interface SMAPx32 -format BIN -loadbit "up 0x0 ./$firstRP1bit/top_A1_artico3_recombined_partial.bit" ./$firstRP1/top_A1_artico3_recombined_partial.bin
     puts "	#HD: Completed"
     close_project
 
@@ -298,18 +298,20 @@ proc artico3_build_bitstream {} {
 
     puts "#HD: Generating full and partial bitstreams for shift_right functions"
     open_checkpoint A1/top_A1_<a3<KernCoreName>a3>_route.dcp
-    write_bitstream -force -bin_file -no_partial_bitfile ./$secondRP1/top_A1_<a3<KernCoreName>a3>.bit
-    file rename "./$secondRP1/top_A1_<a3<KernCoreName>a3>.bit" "./$firstRP1bit/top_A1_<a3<KernCoreName>a3>.bit"
 
 <a3<=generate for SLOTS=>a3>
-    write_bitstream -force -bin_file -cell floorplan_static_i/reconfig_base_inst_0/U0/a3_slot_<a3<id>a3> ./$secondRP1/<a3<KernCoreName>a3>_a3_slot_<a3<id>a3>_partial.bit
-    file rename "./$secondRP1/<a3<KernCoreName>a3>_a3_slot_<a3<id>a3>_partial.bit" "./$firstRP1bit/<a3<KernCoreName>a3>_a3_slot_<a3<id>a3>_partial.bit"
+    write_bitstream -force -cell floorplan_static_i/reconfig_base_inst_0/U0/a3_slot_<a3<id>a3> ./$firstRP1bit/<a3<KernCoreName>a3>_a3_slot_<a3<id>a3>_partial.bit
+    write_cfgmem -force -disablebitswap -interface SMAPx32 -format BIN -loadbit "up 0x0 ./$firstRP1bit/<a3<KernCoreName>a3>_a3_slot_<a3<id>a3>_partial.bit" ./$secondRP1/<a3<KernCoreName>a3>_a3_slot_<a3<id>a3>_partial.bin
 <a3<=end generate=>a3>
 
     puts "	#HD: Completed"
     close_project
 
 <a3<end generate>a3>
+
+    # Clean write_cfgmem report files
+    file delete -force {*}[glob bin/*.prm]
+    file delete -force {*}[glob bin/pbs/*.prm]
 
 }
 

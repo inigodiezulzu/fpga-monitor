@@ -11,7 +11,7 @@
 
 # Variables
 ARTICO3_REPO_URL="https://github.com/inigodiezulzu/artico3" # ARTICo3 repository URL
-COMMIT_HASH=697f5b0a20443e064b7b86f786ba6976684a907b        # ARTICo3 daemon commit hash
+COMMIT_HASH=f8ec3aa422fca436ab375d154d8702ef7016d7e6        # ARTICo3 daemon commit hash
 ARTICO3_DIR="artico3"                                       # ARTICo3 directory
 MONITOR_PROJECT_DIR=$(pwd)                                  # Monitor project directory
 INTEGRATION_DIR="files_to_integrate"                        # Integration directory

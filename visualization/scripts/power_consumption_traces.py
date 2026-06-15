@@ -101,7 +101,7 @@ def plot_power_mono(config_parameters, ax):
     # Plot Power Traces (if adc_measurement_board is True, rshunt_index=0)
     if config_parameters["adc_measurement_board"] == "CEI":
         return plot_power_traces(False, config_parameters,"con_filtered.txt",ax,total_cycles_consumption,total_samples_consumption,rshunt_index=0)
-    elif config_parameters["adc_measurement_board"] == "MDC":
+    elif config_parameters["adc_measurement_board"] == "AU250":
         return plot_power_traces(False, config_parameters,"con_filtered.txt",ax,total_cycles_consumption,total_samples_consumption,rshunt_index=None)
     else:
         raise ValueError("adc_measurement_board not implemented")
@@ -180,7 +180,7 @@ def plot_power_traces(dual, config_parameters,file,ax, total_cycles_consumption,
 
     # Power conversion formula
     if rshunt_index == None:
-        # TODO: implement this case
+        # AU250 Power Conversion Factor (from CMS digital value to Watts)
         power_conversion_factor = 1 / 1000000
     else:
         adc_reference_voltage = float(config_parameters["adc_reference_voltage"])

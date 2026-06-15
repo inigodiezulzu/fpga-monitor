@@ -20,10 +20,10 @@
 #include "artico3.h"
 #include "monitor.h"
 
-#define MSIZE_APP (2048)
+#define MSIZE_APP (512)
 #define MSIZE_ACC (64)
 
-#define POWER_SAMPLES  (131072)
+#define POWER_SAMPLES  (100)
 #define TRACES_SAMPLES (16384)
 
 // Software reference implementation
