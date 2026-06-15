@@ -76,7 +76,7 @@ static struct monitorData_t *monitordata = NULL;
  *
  * @return The number of bytes read, or -1 if an error occurred.
  */
-ssize_t read_to_buffer(char *fname, int fd, char *buffer, uint64_t size,
+static ssize_t read_to_buffer(char *fname, int fd, char *buffer, uint64_t size,
             uint64_t base)
 {
     ssize_t rc;
